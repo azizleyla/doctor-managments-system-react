@@ -15,10 +15,10 @@ const Breadcrumb = () => {
       aria-label="breadcrumb"
     >
       <Link href="/">Dashboard</Link>
-      {pathnameArray.map((path) => (
+      {pathnameArray.map((path, index) => (
         <Link
           style={{ textTransform: "capitalize", color: "#396cf0" }}
-          key="2"
+          key={index}
           href={`/${path}`}
         >
           {path}

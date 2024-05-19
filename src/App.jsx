@@ -6,14 +6,19 @@ import ProtectedRoute from "./ProtectedRoute";
 import { useAuth } from "./hooks/useAuth";
 
 const LoginPage = lazy(() => import("./pages/login"));
+const SignUpPage = lazy(() => import("./pages/signup"));
+
 const DoctorsPage = lazy(() => import("./pages/doctors"));
 const AddDoctorPage = lazy(() => import("./pages/doctors/add-doctor"));
+const PatientsPage = lazy(() => import("./pages/patients"));
 
 function App() {
   const { user } = useAuth();
 
   return (
     <Routes>
+      <Route path="/signup" element={<SignUpPage />}></Route>
+
       <Route
         path="/login"
         element={user ? <Navigate to="/" /> : <LoginPage />}
@@ -33,6 +38,14 @@ function App() {
             element={
               <Suspense fallback={<p>Loading..</p>}>
                 <AddDoctorPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/patients"
+            element={
+              <Suspense fallback={<p>Loading..</p>}>
+                <PatientsPage />
               </Suspense>
             }
           />

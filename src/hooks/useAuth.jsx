@@ -4,22 +4,29 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState({ name: "lel" });
+  const [user, setUser] = useState({ name: "l" });
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from || "/";
 
   const logout = () => {
-    navigate("/");
+    navigate("/login");
+  };
+  const login = () => {
+    navigate(from, { replace: true });
   };
 
   const value = useMemo(
     () => ({
       user,
       logout,
+      login,
     }),
     [user],
   );

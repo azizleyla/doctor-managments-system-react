@@ -92,9 +92,9 @@ export default function SwipeableTemporaryDrawer() {
                 </Box>
               </AccordionSummary>
               <AccordionDetails sx={{ padding: "5px 50px" }}>
-                {children.map((route) => (
+                {children.map((route, index) => (
                   <ListItemButton
-                    key={route}
+                    key={index}
                     selected={route.path == pathname}
                     sx={{
                       padding: "5px 0px!important",
@@ -105,6 +105,7 @@ export default function SwipeableTemporaryDrawer() {
                     <ListItemIcon
                       sx={{
                         minWidth: 0,
+                        background: "#fff!important",
                         marginRight: "5px",
                         color: "#212529",
                         "& .MuiSvgIcon-root ": {
@@ -114,7 +115,9 @@ export default function SwipeableTemporaryDrawer() {
                     >
                       <ArrowRightIcon />
                     </ListItemIcon>
-                    <ListItemText>{route.title}</ListItemText>
+                    <ListItemText sx={{ padding: "0!important" }}>
+                      {route.title}
+                    </ListItemText>
                   </ListItemButton>
                 ))}
               </AccordionDetails>

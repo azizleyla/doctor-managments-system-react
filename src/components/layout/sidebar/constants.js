@@ -17,14 +17,19 @@ export const menuLinks = [
     {
         title: "Doctors",
         children: [
+            { title: "All Doctors", path: "/doctors" },
             { title: "Add Doctor", path: "/doctors/add-doctor" },
-            { title: "Doctors", path: "/doctors" }
+
         ],
         icon: PersonOutlineIcon,
     },
     {
         title: "Patients",
         path: "/patients",
+        children: [
+            { title: "All Patients", path: "/patients" },
+            { title: "Add Patient", path: "/add-patient" }
+        ],
         icon: AccessibleIcon,
     }
 ];
