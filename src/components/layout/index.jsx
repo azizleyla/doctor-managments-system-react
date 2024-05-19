@@ -1,12 +1,14 @@
 import React, { createContext, useState } from "react";
-import Sidebar from "../sidebar";
-import Topbar from "../topbar";
+import Sidebar from "./sidebar";
+import Topbar from "./topbar";
 import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
+import Breadcrumb from "../shared/breadcrumb";
+import clsx from "clsx";
 
 export const SidebarContext = createContext();
 
-const Layout = ({ children }) => {
+const Layout = () => {
   const [isOpenSidebar, setIsOpenSidebar] = useState(true);
   const handleToggle = (open) => (event) => {
     if (
@@ -24,11 +26,14 @@ const Layout = ({ children }) => {
     <SidebarContext.Provider
       value={{ isOpenSidebar, setIsOpenSidebar, handleToggle }}
     >
-      <Box>
+      <Box sx={{ height: "100vh" }}>
         <Sidebar />
-        <main>
+        <main className={clsx({ mainLeft: isOpenSidebar })}>
           <Topbar />
-          <Outlet />
+          <Box sx={{ padding: "94px 14px  24px" }}>
+            <Breadcrumb />
+            <Outlet />
+          </Box>
         </main>
       </Box>
     </SidebarContext.Provider>

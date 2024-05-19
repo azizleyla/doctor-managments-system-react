@@ -1,42 +1,45 @@
-import { Suspense, lazy, useState } from "react";
+import { Suspense, lazy } from "react";
 import "./App.css";
-import {
-  Navigate,
-  Route,
-  RouterProvider,
-  createBrowserRouter,
-  createRoutesFromElements,
-} from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Layout from "./components/layout";
+import ProtectedRoute from "./ProtectedRoute";
+import { useAuth } from "./hooks/useAuth";
 
-const DoctorsList = lazy(() => import("./components/doctors"));
+const LoginPage = lazy(() => import("./pages/login"));
+const DoctorsPage = lazy(() => import("./pages/doctors"));
+const AddDoctorPage = lazy(() => import("./pages/doctors/add-doctor"));
 
 function App() {
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <Route path="/">
-        <Route
-          index
-          element={<Navigate to="/dashboard" replace="true" />}
-        />
-        <Route path="dashboard" element={<Layout />}>
+  const { user } = useAuth();
+
+  return (
+    <Routes>
+      <Route
+        path="/login"
+        element={user ? <Navigate to="/" /> : <LoginPage />}
+      ></Route>
+      <Route path="/" element={<Layout />}>
+        <Route element={<ProtectedRoute />}>
           <Route
             path="doctors"
             element={
               <Suspense fallback={<p>Loading..</p>}>
-                <DoctorsList />
+                <DoctorsPage />
+              </Suspense>
+            }
+          ></Route>
+          <Route
+            path="/doctors/add-doctor"
+            element={
+              <Suspense fallback={<p>Loading..</p>}>
+                <AddDoctorPage />
               </Suspense>
             }
           />
+          <Route path="*" element={<p>There's nothing here: 404!</p>} />
         </Route>
-      </Route>,
-    ),
-  );
-
-  return (
-    <>
-      <RouterProvider router={router} />
-    </>
+      </Route>
+    </Routes>
   );
 }
 

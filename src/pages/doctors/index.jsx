@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -8,11 +9,10 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { doctorsData } from "../../utils/constants";
 import "./style.scss";
-import { doctorsData } from "../../utils/constant";
-import { useNavigate } from "react-router-dom";
 
-const Doctor = () => {
+const Doctors = () => {
   const navigate = useNavigate();
 
   return (
@@ -46,6 +46,9 @@ const Doctor = () => {
                   "& .job": {
                     color: "#fff",
                   },
+                  "&:hover .MuiTypography-root": {
+                    color: "#fff",
+                  },
                 },
               }}
             >
@@ -74,6 +77,7 @@ const Doctor = () => {
                   gutterBottom
                   variant="h5"
                   component="a"
+                  to="/"
                 >
                   {doctor.name}
                 </Typography>
@@ -93,4 +97,4 @@ const Doctor = () => {
   );
 };
 
-export default Doctor;
+export default Doctors;

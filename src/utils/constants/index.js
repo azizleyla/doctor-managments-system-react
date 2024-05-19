@@ -32,26 +32,3 @@ export const doctorsData = [
     }
 ]
 
-
-
-export const menuLinks = [
-    {
-        title: "Dashboard",
-        path: "/",
-        icon: PersonOutlineIcon,
-    },
-    {
-        title: "Appointment",
-        path: "/appointment",
-        icon: AccessAlarmsIcon,
-    }, {
-        title: "Doctors",
-        children: [{ title: "Add Doctor", path: "/doctors/add-doctor" }, { title: "Doctors", path: "/doctors" }],
-        icon: PersonOutlineIcon,
-    },
-    {
-        title: "Patients",
-        path: "/patients",
-        icon: AccessibleIcon,
-    }
-]

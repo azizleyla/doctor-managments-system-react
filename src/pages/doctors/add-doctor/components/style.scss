@@ -1,0 +1,30 @@
+.doctorForm-box {
+  box-shadow: 0 0 3px #3c485826 !important;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 0.375rem;
+  .MuiFormLabel-root {
+    color: #212529;
+    font-weight: 500 !important;
+  }
+  .MuiInputBase-input {
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 0.375rem 0.75rem;
+  }
+}
+
+.customTextarea {
+  width: 100%;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+.doctorListContainer {
+  box-shadow: 0 0 3px #3c485826 !important;
+  border-radius: 0.375rem;
+  background-color: #fff;
+  padding: 1.5rem;
+}
