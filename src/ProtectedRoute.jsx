@@ -2,20 +2,20 @@ import React from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 
-const ProtectedRoute = () => {
+const ProtectedRoute = ({ isAuthPage, children }) => {
   const { user } = useAuth();
-  const location = useLocation();
 
-  if (!user) {
-    return (
-      <Navigate
-        replace
-        state={{ from: `${location.pathname}` }}
-        to="/login"
-      />
-    );
+  if (!isAuthPage && !user) {
+    // login
+    // signup
+    return <Navigate to="/auth/signup" />;
   }
-  return <Outlet />;
+
+  if (isAuthPage && user) {
+    return <Navigate to="/" />;
+  }
+
+  return children;
 };
 
 export default ProtectedRoute;

@@ -156,7 +156,7 @@ const Login = () => {
               <Typography component="span">
                 Don't have an account?
               </Typography>
-              <Link to="signup" style={{ fontWeight: "500" }}>
+              <Link to="/auth/signup" style={{ fontWeight: "500" }}>
                 {" "}
                 Sign Up
               </Link>
