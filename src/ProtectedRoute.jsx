@@ -1,18 +1,17 @@
 import React from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
+import { checkJWTToken } from "./utils/helpers/helpers";
 
 const ProtectedRoute = ({ isAuthPage, children }) => {
-  const { user } = useAuth();
+  const isAuthenticated = checkJWTToken();
 
-  if (!isAuthPage && !user) {
-    // login
-    // signup
-    return <Navigate to="/auth/signup" />;
+  if (isAuthPage && isAuthenticated) {
+    return <Navigate to="/" replace />;
   }
 
-  if (isAuthPage && user) {
-    return <Navigate to="/" />;
+  if (!isAuthPage && !isAuthenticated) {
+    return <Navigate to="/auth/login" replace />;
   }
 
   return children;

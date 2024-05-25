@@ -12,17 +12,34 @@ import {
 import React, { useContext, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { SidebarContext } from "../../layout";
+import { useAuth } from "../../../hooks/useAuth";
 
 const Topbar = () => {
   const { isOpenSidebar, handleToggle } = useContext(SidebarContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const { logout, user } = useAuth();
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleLogOut = () => {
+    handleClose();
+    logout();
+  };
+
+  function stringAvatar(name) {
+    return {
+      sx: {
+        bgcolor: "#1F6CFA",
+      },
+      children: `${name?.split(" ")[0][0]}${name?.split(" ")[1][0]}`,
+    };
+  }
+
   return (
     <Box
       sx={{
@@ -79,16 +96,7 @@ const Topbar = () => {
             minWidth: 0,
           }}
         >
-          <Avatar
-            alt="avatar"
-            sx={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              boxShadow: "0 0 3px #3c485826",
-            }}
-            src="https://doctris-react-admin.vercel.app/static/media/01.d8b9651b2a3ba6336221.jpg"
-          />
+          {user?.username && <Avatar {...stringAvatar(user?.username)} />}
         </Button>
         <Menu
           disableScrollLock={true}
@@ -118,29 +126,38 @@ const Topbar = () => {
             gap={1}
             alignItems="center"
           >
-            <Avatar
-              sx={{ boxShadow: "0 0 3px #3c485826" }}
-              src="https://doctris-react-admin.vercel.app/static/media/01.d8b9651b2a3ba6336221.jpg"
-            />
+            {user?.photo ? (
+              <Avatar
+                sx={{ boxShadow: "0 0 3px #3c485826" }}
+                src="https://doctris-react-admin.vercel.app/static/media/01.d8b9651b2a3ba6336221.jpg"
+              />
+            ) : (
+              <Avatar {...stringAvatar(user?.username)} />
+            )}
+
             <Stack>
               <Typography
+                textTransform="capitalize"
                 fontWeight="600"
                 sx={{ fontSize: "13px" }}
                 variant="p"
               >
-                Carvin Carlo
+                {user?.username}
               </Typography>
               <Typography
                 variant="span"
-                sx={{ fontSize: "11px", color: "#8492a6" }}
+                sx={{
+                  fontSize: "11px",
+                  textTransform: "capitalize",
+                  color: "#8492a6",
+                }}
               >
-                Eye Doctor
+                {user?.role}
               </Typography>
             </Stack>
           </Box>
-          <MenuItem  onClick={handleClose}>Profile Settings</MenuItem>
-          <MenuItem onClick={handleClose}>My account</MenuItem>
-          <MenuItem onClick={handleClose}>Logout</MenuItem>
+          <MenuItem onClick={handleClose}>My Profile</MenuItem>
+          <MenuItem onClick={handleLogOut}>Logout</MenuItem>
         </Menu>
       </Box>
     </Box>

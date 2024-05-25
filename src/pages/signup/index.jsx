@@ -12,8 +12,8 @@ import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { AuthProvider } from "../../hooks/useAuth";
-import { Link } from "react-router-dom";
+import { AuthProvider, useAuth } from "../../hooks/useAuth";
+import { Link, Navigate, useActionData } from "react-router-dom";
 
 const schema = yup
   .object({
@@ -38,8 +38,11 @@ const SignUp = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  const { register } = useAuth();
   const onSubmit = (values) => {
-    console.log(values);
+    // Navigate("/login");
+    const { username, email, password } = values;
+    register({ email, password, username });
   };
 
   return (
@@ -169,7 +172,7 @@ const SignUp = () => {
                 {errors?.password?.message}
               </Typography>
             </Box>
-           
+
             <Button
               sx={{ margin: "30px 0" }}
               type="submit"

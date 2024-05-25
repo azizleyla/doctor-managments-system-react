@@ -9,12 +9,9 @@ import {
   Typography,
 } from "@mui/material";
 
-const SkeletonLoading = () => {
+const CardSkeleton = () => {
   const isLoading = true;
   return (
-    <Grid mt={2} container spacing={3}>
-      {doctorsData.map((doctor) => (
-        <Grid item lg={3}>
           <Card
             sx={{
               borderRadius: "6px",
@@ -45,10 +42,8 @@ const SkeletonLoading = () => {
               <MuiSkeleton variant="text" width={80} height={20} />
             </CardContent>
           </Card>
-        </Grid>
-      ))}
-    </Grid>
+
   );
 };
 
-export default SkeletonLoading;
+export default CardSkeleton;

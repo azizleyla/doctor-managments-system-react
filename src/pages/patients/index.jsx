@@ -1,112 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import MuiDataTable from "../../components/shared/table";
-import { Button, IconButton, Stack } from "@mui/material";
+import {
+  Button,
+  DialogActions,
+  IconButton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-const columns = [
-  { field: "id", headerName: "ID", width: 90 },
-  {
-    field: "name",
-    headerName: "Name",
-    width: 150,
-    editable: true,
-  },
-  {
-    field: "age",
-    headerName: "Age",
-    width: 150,
-    editable: true,
-  },
-  {
-    field: "gender",
-    headerName: "Gender",
-    width: 110,
-    editable: true,
-  },
-  {
-    field: "phone",
-    headerName: "Mobile No",
-    sortable: false,
-    width: 160,
-  },
-  {
-    field: "address",
-    headerName: "Address",
-    sortable: true,
-    width: 160,
-  },
-  {
-    field: "action",
-    headerName: "Actions",
-    sortable: false,
-    width: 160,
-    renderCell: () => {
-      return (
-        <Stack
-          sx={{ marginTop: "6px" }}
-          alignItems="center"
-          direction="row"
-          spacing={2}
-        >
-          <IconButton
-            sx={{
-              width: "36px",
-              height: "36px",
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              background: "#396cf01a",
-              border: "1px solid #396cf01a",
-              boxShadow: "0 3px 5px 0 #396cf04d",
-            }}
-            variant="outlined"
-            color="warning"
-            size="small"
-          >
-            <VisibilityIcon sx={{ fontSize: "16px", color: "#396cf0" }} />
-          </IconButton>
-          <IconButton
-            sx={{
-              width: "36px",
-              height: "36px",
-              border: "1px solid #53c7971a",
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              background: "#53c7971a",
-              boxShadow: "0 3px 5px 0 #53c7971a",
-            }}
-            variant="outlined"
-            color="warning"
-            size="small"
-          >
-            <EditIcon sx={{ fontSize: "16px", color: "#53c797" }} />
-          </IconButton>
-          <IconButton
-            sx={{
-              background: "#f0735a1a",
-              border: "1px solid #f0735a1a",
-              width: "36px",
-              height: "36px",
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              boxShadow: "0 3px 5px 0 #f0735a1a",
-            }}
-            variant="outlined"
-            color="error"
-            size="small"
-          >
-            <DeleteOutlineIcon
-              sx={{ fontSize: "16px", color: "#f0735a" }}
-            />
-          </IconButton>
-        </Stack>
-      );
-    },
-  },
-];
+import Dialog from "../../components/shared/dialog";
+import ShortInfo from "./components/ShortInfo";
 
 const rows = [
   {
@@ -184,6 +89,135 @@ const rows = [
 ];
 
 const PatientsList = () => {
+  const [allInfoDialog, setAllInfoDialog] = useState({
+    open: false,
+    profile: "",
+    component: <></>,
+  });
+
+  const handleClickOpen = () => {
+    setAllInfoDialog({
+      open: true,
+      title: "Profile",
+      component: <ShortInfo />,
+    });
+  };
+
+  const handleClose = () => {
+    setAllInfoDialog({
+      open: false,
+      title: "",
+      component: <></>,
+    });
+  };
+
+  const columns = [
+    { field: "id", headerName: "ID", width: 90 },
+    {
+      field: "name",
+      headerName: "Name",
+      width: 150,
+      editable: true,
+    },
+    {
+      field: "age",
+      headerName: "Age",
+      width: 150,
+      editable: true,
+    },
+    {
+      field: "gender",
+      headerName: "Gender",
+      width: 110,
+      editable: true,
+    },
+    {
+      field: "phone",
+      headerName: "Mobile No",
+      sortable: false,
+      width: 160,
+    },
+    {
+      field: "address",
+      headerName: "Address",
+      sortable: true,
+      width: 160,
+    },
+    {
+      field: "action",
+      headerName: "Actions",
+      sortable: false,
+      width: 160,
+      renderCell: () => {
+        return (
+          <Stack
+            sx={{ marginTop: "6px" }}
+            alignItems="center"
+            direction="row"
+            spacing={2}
+          >
+            <IconButton
+              onClick={handleClickOpen}
+              sx={{
+                width: "36px",
+                height: "36px",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                background: "#396cf01a",
+                border: "1px solid #396cf01a",
+                boxShadow: "0 3px 5px 0 #396cf04d",
+              }}
+              variant="outlined"
+              color="warning"
+              size="small"
+            >
+              <VisibilityIcon
+                sx={{ fontSize: "16px", color: "#396cf0" }}
+              />
+            </IconButton>
+            <IconButton
+              sx={{
+                width: "36px",
+                height: "36px",
+                border: "1px solid #53c7971a",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                background: "#53c7971a",
+                boxShadow: "0 3px 5px 0 #53c7971a",
+              }}
+              variant="outlined"
+              color="warning"
+              size="small"
+            >
+              <EditIcon sx={{ fontSize: "16px", color: "#53c797" }} />
+            </IconButton>
+            <IconButton
+              sx={{
+                background: "#f0735a1a",
+                border: "1px solid #f0735a1a",
+                width: "36px",
+                height: "36px",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                boxShadow: "0 3px 5px 0 #f0735a1a",
+              }}
+              variant="outlined"
+              color="error"
+              size="small"
+            >
+              <DeleteOutlineIcon
+                sx={{ fontSize: "16px", color: "#f0735a" }}
+              />
+            </IconButton>
+          </Stack>
+        );
+      },
+    },
+  ];
+
   return (
     <div>
       <MuiDataTable
@@ -198,6 +232,17 @@ const PatientsList = () => {
         rows={rows}
         columns={columns}
       />
+      <Dialog
+        fullWidth
+        maxWidth="sm"
+        title={allInfoDialog.title}
+        open={allInfoDialog.open}
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        allInfoDialog={allInfoDialog.open}
+      >
+        {allInfoDialog.component}
+      </Dialog>
     </div>
   );
 };

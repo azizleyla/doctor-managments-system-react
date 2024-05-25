@@ -12,12 +12,12 @@ import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { AuthProvider } from "../../hooks/useAuth";
-import { Link } from "react-router-dom";
+import { AuthProvider, useAuth } from "../../hooks/useAuth";
+import { Link, useNavigate } from "react-router-dom";
 
 const schema = yup
   .object({
-    username: yup.string().required("username is required"),
+    email: yup.string().required("email is required"),
     password: yup.string().required("password is required"),
   })
   .required();
@@ -32,12 +32,17 @@ const Login = () => {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const { login } = useAuth();
+
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  const onSubmit = (values) => {
-    console.log(values);
+  const navigate = useNavigate();
+  const onSubmit = async (values) => {
+    const { email, password } = values;
+    login({ email, password });
   };
 
   return (
@@ -72,13 +77,14 @@ const Login = () => {
               <Controller
                 rules={{ required: true }}
                 control={control}
-                name="username"
+                name="email"
                 render={({ field }) => (
                   <TextField
-                    placeholder="Username"
+                    placeholder="Email"
                     sx={{
                       "& .MuiInputBase-input": {
-                        fontSize: ".9375rem",
+                        fontSize: "1rem",
+                        margin: 0,
                         fontWeight: 400,
                         lineHeight: 1.5,
                         padding: ".375rem .75rem",
@@ -92,7 +98,7 @@ const Login = () => {
                 variant="span"
                 sx={{ color: "red", fontSize: "10px" }}
               >
-                {errors?.username?.message}
+                {errors?.email?.message}
               </Typography>
             </Box>
             <Box sx={{ marginTop: "15px" }}>
