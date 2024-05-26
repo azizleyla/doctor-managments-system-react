@@ -13,6 +13,7 @@ import React, { useContext, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { SidebarContext } from "../../layout";
 import { useAuth } from "../../../hooks/useAuth";
+import { Link } from "react-router-dom";
 
 const Topbar = () => {
   const { isOpenSidebar, handleToggle } = useContext(SidebarContext);
@@ -156,7 +157,9 @@ const Topbar = () => {
               </Typography>
             </Stack>
           </Box>
-          <MenuItem onClick={handleClose}>My Profile</MenuItem>
+          <MenuItem onClick={handleClose}>
+            <Link to="/profile"> My Profile</Link>
+          </MenuItem>
           <MenuItem onClick={handleLogOut}>Logout</MenuItem>
         </Menu>
       </Box>

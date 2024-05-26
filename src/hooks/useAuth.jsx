@@ -23,7 +23,6 @@ export const AuthProvider = ({ children }) => {
     if (res.data) {
       Cookies.set("token", res.data.token);
       setUser(res.data.user);
-      console.log(res.data.user);
       navigate("/");
     }
   };
@@ -58,15 +57,15 @@ export const AuthProvider = ({ children }) => {
       });
       if (res.data) {
         setUser(res.data);
+        Cookies.set("token", token); // Refresh the token (if applicable)
       }
-      Cookies.set("token", token); // Refresh the token (if applicable)
     };
 
     checkTokenValidity();
 
     const interval = setInterval(checkTokenValidity, 10 * 1000); // Check every 60 seconds
 
-    return () => clearInterval(interval); // Clean up the interval on component unmount
+    return () => clearInterval(interval);
   }, [navigate]);
 
   const logout = () => {

@@ -1,7 +1,8 @@
 import React from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
-import { checkJWTToken } from "./utils/helpers/helpers";
+import { checkJWTToken, isTokenExpired } from "./utils/helpers/helpers";
+import Cookies from "js-cookie";
 
 const ProtectedRoute = ({ isAuthPage, children }) => {
   const isAuthenticated = checkJWTToken();

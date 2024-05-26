@@ -5,6 +5,7 @@ import Layout from "./components/layout";
 import ProtectedRoute from "./ProtectedRoute";
 import SkeletonLoading from "./components/shared/skeleton/SkeletonLoading";
 import CardSkeleton from "./pages/doctors/CardSkeleton";
+import Profile from "./pages/profile";
 
 const LoginPage = lazy(() => import("./pages/login"));
 const SignUpPage = lazy(() => import("./pages/signup"));
@@ -50,6 +51,8 @@ function App() {
               </Suspense>
             }
           />
+          <Route path="profile" element={<Profile />} />
+
           <Route path="doctors/add-doctor" element={<AddDoctorPage />} />
           <Route path="patients" element={<PatientsPage />} />
         </Route>
