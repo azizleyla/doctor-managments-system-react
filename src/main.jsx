@@ -6,6 +6,8 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth.jsx";
 import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@mui/material";
+import { Provider } from "react-redux";
+import store from "./store";
 
 const theme = createTheme({
   typography: {
@@ -20,9 +22,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <BrowserRouter>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
+        <Provider store={store}>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </Provider>
       </BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>,

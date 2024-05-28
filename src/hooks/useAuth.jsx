@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, {
   createContext,
   useContext,
@@ -6,33 +5,57 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { isTokenExpired } from "../utils/helpers/helpers";
+import {
+  useGetUserProfileQuery,
+  useLoginUserMutation,
+  useRegisterUserMutation,
+} from "../services/Auth.service";
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [authError, setAuthError] = useState(null);
 
-  const login = async ({ email, password }) => {
-    const res = await axios.post("http://localhost:8080/auth/login", {
-      email: email,
-      password: password,
-    });
-    if (res.data) {
-      Cookies.set("token", res.data.token);
-      setUser(res.data.user);
-      navigate("/");
+  const navigate = useNavigate();
+
+  const [loginUser] = useLoginUserMutation();
+  const [registerUser] = useRegisterUserMutation();
+  const { data: userInfo } = useGetUserProfileQuery(undefined, {
+    skip: !Cookies.get("token"),
+  });
+
+  const handleLogin = async (values) => {
+    try {
+      const response = await loginUser(values);
+
+      if (response.error) {
+        if (
+          response.error.status === 500 ||
+          response.error.status === 401
+        ) {
+          setAuthError("Email or password is incorrect");
+        } else {
+          setAuthError("An unknown error occurred");
+        }
+      } else {
+        Cookies.set("token", response.data.token);
+        setUser(response.data.user);
+        navigate("/");
+        setAuthError(null);
+      }
+    } catch (error) {
+      setAuthError("An error occurred during login");
     }
+    console.log(authError);
   };
-  const register = async ({ email, username, password }) => {
-    const res = await axios.post("http://localhost:8080/auth/signup", {
-      email: email,
-      password: password,
-      username: username,
-    });
-    if (res.data) {
+
+  const register = async (values) => {
+    const response = await registerUser(values);
+    if (response.data) {
       navigate("/auth/login");
     }
   };
@@ -40,23 +63,17 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkTokenValidity = async () => {
       const token = Cookies.get("token");
-      if (!token) {
-        navigate("/auth/login");
-        return;
-      }
+      // if (!token) {
+      //   navigate("/auth/login");
+      //   return;
+      // }
       if (isTokenExpired(token)) {
         Cookies.remove("token");
         navigate("/auth/login");
         return;
       }
-
-      const res = await axios.get("http://localhost:8080/auth/profile", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (res.data) {
-        setUser(res.data);
+      if (userInfo) {
+        setUser(userInfo);
         Cookies.set("token", token); // Refresh the token (if applicable)
       }
     };
@@ -66,7 +83,7 @@ export const AuthProvider = ({ children }) => {
     const interval = setInterval(checkTokenValidity, 10 * 1000); // Check every 60 seconds
 
     return () => clearInterval(interval);
-  }, [navigate]);
+  }, [navigate, userInfo]);
 
   const logout = () => {
     ["token"].forEach((obj) => Cookies.remove(obj)); // remove data save in cookies
@@ -77,8 +94,9 @@ export const AuthProvider = ({ children }) => {
     () => ({
       user,
       logout,
+      authError,
       register,
-      login,
+      handleLogin,
     }),
     [user],
   );

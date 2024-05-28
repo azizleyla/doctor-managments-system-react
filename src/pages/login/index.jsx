@@ -1,7 +1,9 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
+  Alert,
   Box,
   Button,
+  Collapse,
   IconButton,
   InputAdornment,
   OutlinedInput,
@@ -14,6 +16,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AuthProvider, useAuth } from "../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
+import CloseIcon from "@mui/icons-material/Close";
 
 const schema = yup
   .object({
@@ -33,17 +36,17 @@ const Login = () => {
     resolver: yupResolver(schema),
   });
 
-  const { login } = useAuth();
+  const { handleLogin, authError } = useAuth();
+  const [showErrorAlert, setShowErrorAlert] = useState(true);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  const navigate = useNavigate();
   const onSubmit = async (values) => {
-    const { email, password } = values;
-    login({ email, password });
+    handleLogin(values);
   };
+  console.log(authError);
 
   return (
     <AuthProvider>
@@ -72,6 +75,30 @@ const Login = () => {
           >
             Login
           </Typography>
+          {authError && (
+            <Collapse sx={{ marginBottom: "10px" }} in={showErrorAlert}>
+              <Alert
+                variant="filled"
+                severity="error"
+                open={showErrorAlert}
+                action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setShowErrorAlert(false);
+                    }}
+                  >
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
+                }
+              >
+                {authError}
+              </Alert>
+            </Collapse>
+          )}
+
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box>
               <Controller

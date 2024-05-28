@@ -1,7 +1,9 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
+  Alert,
   Box,
   Button,
+  Collapse,
   IconButton,
   InputAdornment,
   OutlinedInput,
@@ -13,8 +15,8 @@ import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AuthProvider, useAuth } from "../../hooks/useAuth";
-import { Link, Navigate, useActionData } from "react-router-dom";
-
+import { Link } from "react-router-dom";
+import CloseIcon from "@mui/icons-material/Close";
 const schema = yup
   .object({
     email: yup.string().required("email is required"),
@@ -26,6 +28,7 @@ const schema = yup
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(true);
 
   const {
     control,
@@ -38,11 +41,11 @@ const SignUp = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
   const { register } = useAuth();
   const onSubmit = (values) => {
     // Navigate("/login");
-    const { username, email, password } = values;
-    register({ email, password, username });
+    register(values);
   };
 
   return (
@@ -72,6 +75,28 @@ const SignUp = () => {
           >
             Sign Up
           </Typography>
+          <Collapse sx={{ marginBottom: "10px" }} in={showErrorAlert}>
+            <Alert
+              variant="filled"
+              severity="error"
+              open={showErrorAlert}
+              action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                    setShowErrorAlert(false);
+                  }}
+                >
+                  <CloseIcon fontSize="inherit" />
+                </IconButton>
+              }
+            >
+              Email alread token{" "}
+            </Alert>
+          </Collapse>
+
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box>
               <Controller

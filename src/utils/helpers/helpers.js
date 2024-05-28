@@ -10,7 +10,7 @@ export function checkJWTToken() {
     }
 }
 export function isTokenExpired(token) {
-    if (!token) return true;
+    if (!token) return false;
     try {
         const decodedToken = jwtDecode(token);
         const currentTime = Date.now() / 1000;
