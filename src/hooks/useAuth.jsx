@@ -24,7 +24,11 @@ export const AuthProvider = ({ children }) => {
 
   const [loginUser] = useLoginUserMutation();
   const [registerUser] = useRegisterUserMutation();
-  const { data: userInfo } = useGetUserProfileQuery(undefined, {
+  const {
+    data: userInfo,
+    isError,
+    error,
+  } = useGetUserProfileQuery(undefined, {
     skip: !Cookies.get("token"),
   });
 
@@ -33,10 +37,7 @@ export const AuthProvider = ({ children }) => {
       const response = await loginUser(values);
 
       if (response.error) {
-        if (
-          response.error.status === 500 ||
-          response.error.status === 401
-        ) {
+        if (response.error.status == 500 || response.error.status == 404) {
           setAuthError("Email or password is incorrect");
         } else {
           setAuthError("An unknown error occurred");
@@ -50,55 +51,64 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       setAuthError("An error occurred during login");
     }
-    console.log(authError);
   };
 
   const register = async (values) => {
-    const response = await registerUser(values);
-    if (response.data) {
-      navigate("/auth/login");
+    try {
+      const response = await registerUser(values);
+      if (response.error) {
+        const { data } = response.error;
+        setAuthError(
+          data.message || "An error occurred during registration",
+        );
+      } else {
+        navigate("/auth/login");
+        setAuthError(null);
+      }
+    } catch (error) {
+      setAuthError("An error occurred during registration");
     }
   };
 
   useEffect(() => {
+    const token = Cookies.get("token");
     const checkTokenValidity = async () => {
-      const token = Cookies.get("token");
-      // if (!token) {
+      // if (!loggedIn()) {
+      //   Cookies.remove("token");
       //   navigate("/auth/login");
       //   return;
       // }
-      if (isTokenExpired(token)) {
-        Cookies.remove("token");
-        navigate("/auth/login");
-        return;
-      }
       if (userInfo) {
         setUser(userInfo);
-        Cookies.set("token", token); // Refresh the token (if applicable)
+        Cookies.set("token", token);
       }
     };
 
     checkTokenValidity();
-
-    const interval = setInterval(checkTokenValidity, 10 * 1000); // Check every 60 seconds
-
-    return () => clearInterval(interval);
   }, [navigate, userInfo]);
 
   const logout = () => {
-    ["token"].forEach((obj) => Cookies.remove(obj)); // remove data save in cookies
+    Cookies.remove("token");
     navigate("/auth/login");
+    setUser(null);
+  };
+
+  const loggedIn = () => {
+    const token = Cookies.get("token");
+    return !!token && !isTokenExpired(token);
   };
 
   const value = useMemo(
     () => ({
       user,
       logout,
+      loggedIn,
+      setAuthError,
       authError,
       register,
       handleLogin,
     }),
-    [user],
+    [user, authError],
   );
 
   return (

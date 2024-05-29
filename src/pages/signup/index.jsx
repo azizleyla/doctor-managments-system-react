@@ -42,7 +42,7 @@ const SignUp = () => {
     event.preventDefault();
   };
 
-  const { register } = useAuth();
+  const { register, authError, setAuthError } = useAuth();
   const onSubmit = (values) => {
     // Navigate("/login");
     register(values);
@@ -75,25 +75,24 @@ const SignUp = () => {
           >
             Sign Up
           </Typography>
-          <Collapse sx={{ marginBottom: "10px" }} in={showErrorAlert}>
+          <Collapse sx={{ marginBottom: "10px" }} in={authError}>
             <Alert
               variant="filled"
               severity="error"
-              open={showErrorAlert}
               action={
                 <IconButton
                   aria-label="close"
                   color="inherit"
                   size="small"
                   onClick={() => {
-                    setShowErrorAlert(false);
+                    setAuthError(null);
                   }}
                 >
                   <CloseIcon fontSize="inherit" />
                 </IconButton>
               }
             >
-              Email alread token{" "}
+              {authError}
             </Alert>
           </Collapse>
 

@@ -36,7 +36,7 @@ const Login = () => {
     resolver: yupResolver(schema),
   });
 
-  const { handleLogin, authError } = useAuth();
+  const { handleLogin, authError, setAuthError } = useAuth();
   const [showErrorAlert, setShowErrorAlert] = useState(true);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -75,29 +75,26 @@ const Login = () => {
           >
             Login
           </Typography>
-          {authError && (
-            <Collapse sx={{ marginBottom: "10px" }} in={showErrorAlert}>
-              <Alert
-                variant="filled"
-                severity="error"
-                open={showErrorAlert}
-                action={
-                  <IconButton
-                    aria-label="close"
-                    color="inherit"
-                    size="small"
-                    onClick={() => {
-                      setShowErrorAlert(false);
-                    }}
-                  >
-                    <CloseIcon fontSize="inherit" />
-                  </IconButton>
-                }
-              >
-                {authError}
-              </Alert>
-            </Collapse>
-          )}
+          <Collapse sx={{ marginBottom: "10px" }} in={authError}>
+            <Alert
+              variant="filled"
+              severity="error"
+              action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                    setAuthError(null);
+                  }}
+                >
+                  <CloseIcon fontSize="inherit" />
+                </IconButton>
+              }
+            >
+              {authError}
+            </Alert>
+          </Collapse>
 
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box>

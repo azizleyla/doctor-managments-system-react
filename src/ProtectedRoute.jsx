@@ -5,7 +5,8 @@ import { checkJWTToken, isTokenExpired } from "./utils/helpers/helpers";
 import Cookies from "js-cookie";
 
 const ProtectedRoute = ({ isAuthPage, children }) => {
-  const isAuthenticated = checkJWTToken();
+  const { loggedIn } = useAuth();
+  const isAuthenticated = loggedIn();
 
   if (isAuthPage && isAuthenticated) {
     return <Navigate to="/" replace />;
