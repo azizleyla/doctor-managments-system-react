@@ -75,8 +75,9 @@ const Login = () => {
           >
             Login
           </Typography>
-          <Collapse sx={{ marginBottom: "10px" }} in={authError}>
+          {authError && (
             <Alert
+              sx={{ marginBottom: "10px" }}
               variant="filled"
               severity="error"
               action={
@@ -94,8 +95,7 @@ const Login = () => {
             >
               {authError}
             </Alert>
-          </Collapse>
-
+          )}
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box>
               <Controller

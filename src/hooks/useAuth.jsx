@@ -24,68 +24,52 @@ export const AuthProvider = ({ children }) => {
 
   const [loginUser] = useLoginUserMutation();
   const [registerUser] = useRegisterUserMutation();
+
   const {
     data: userInfo,
     isError,
+    isLoading,
     error,
-  } = useGetUserProfileQuery(undefined, {
+  } = useGetUserProfileQuery({
     skip: !Cookies.get("token"),
   });
 
   const handleLogin = async (values) => {
     try {
-      const response = await loginUser(values);
-
-      if (response.error) {
-        if (response.error.status == 500 || response.error.status == 404) {
-          setAuthError("Email or password is incorrect");
-        } else {
-          setAuthError("An unknown error occurred");
-        }
-      } else {
-        Cookies.set("token", response.data.token);
-        setUser(response.data.user);
-        navigate("/");
-        setAuthError(null);
-      }
+      const response = await loginUser(values).unwrap();
+      setUser(response.user);
+      Cookies.set("token", response.token);
+      setAuthError(null);
+      navigate("/auth/login");
     } catch (error) {
-      setAuthError("An error occurred during login");
+      if (error.data) {
+        setAuthError(error.data?.message);
+      }
     }
   };
 
   const register = async (values) => {
     try {
-      const response = await registerUser(values);
-      if (response.error) {
-        const { data } = response.error;
-        setAuthError(
-          data.message || "An error occurred during registration",
-        );
-      } else {
-        navigate("/auth/login");
-        setAuthError(null);
-      }
+      const response = await registerUser(values).unwrap();
+      navigate("/auth/login");
+      setAuthError(null);
     } catch (error) {
-      setAuthError("An error occurred during registration");
+      setAuthError(error?.data.message);
     }
   };
 
   useEffect(() => {
-    const token = Cookies.get("token");
-    const checkTokenValidity = async () => {
-      // if (!loggedIn()) {
-      //   Cookies.remove("token");
-      //   navigate("/auth/login");
-      //   return;
-      // }
-      if (userInfo) {
-        setUser(userInfo);
-        Cookies.set("token", token);
-      }
-    };
-
-    checkTokenValidity();
-  }, [navigate, userInfo]);
+    console.log(userInfo);
+    setAuthError(null);
+    console.log(userInfo);
+    if (!userInfo) {
+      setUser(null);
+      navigate("/auth/login");
+      Cookies.remove("token");
+    } else {
+      setUser(userInfo);
+    }
+  }, [userInfo]);
 
   const logout = () => {
     Cookies.remove("token");
@@ -95,7 +79,7 @@ export const AuthProvider = ({ children }) => {
 
   const loggedIn = () => {
     const token = Cookies.get("token");
-    return !!token && !isTokenExpired(token);
+    return token;
   };
 
   const value = useMemo(

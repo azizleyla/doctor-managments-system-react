@@ -20,6 +20,14 @@ axiosInstance.interceptors.request.use(
         return Promise.reject(error);
     }
 );
+axios.interceptors.response.use((response) => {
+    if (response.config.parse) {
+        //perform the manipulation here and change the response object
+    }
+    return response;
+}, (error) => {
+    return Promise.reject(error.message);
+});
 
 
 export default axiosInstance;

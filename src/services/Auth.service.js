@@ -13,20 +13,23 @@ export const authApi = createApi({
                 url: `auth/login`,
                 method: "POST",
                 data,
-            })
+            }),
+            providesTags: ['auth']
         }),
         registerUser: builder.mutation({
             query: (data) => ({
                 url: "auth/signup",
                 method: "POST",
                 data
-            })
+            }),
+            invalidatesTags: ['auth']
         }),
         getUserProfile: builder.query({
             query: () => ({
                 url: "auth/profile", // Adjust this URL based on your backend endpoint for fetching profiles
                 method: "GET"
-            })
+            }),
+            providesTags: ['auth']
         })
 
     })
