@@ -14,7 +14,6 @@ const DoctorForm = () => {
   });
 
   const onSubmit = (values) => {
-    console.log(values);
   };
   return (
     <Box className="doctorForm-box">

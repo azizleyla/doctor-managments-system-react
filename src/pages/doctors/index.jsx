@@ -11,10 +11,12 @@ import {
 } from "@mui/material";
 import { doctorsData } from "../../utils/constants";
 import "./style.scss";
+import { useGetDoctorsQuery } from "../../services/Doctor.service";
 
 const Doctors = () => {
   const navigate = useNavigate();
-
+  const { data: doctors, isLoading, isError } = useGetDoctorsQuery();
+  console.log(doctors);
   return (
     <Box>
       <Stack
@@ -34,7 +36,7 @@ const Doctors = () => {
         </Button>
       </Stack>
       <Grid mt={2} container spacing={3}>
-        {doctorsData.map((doctor, index) => (
+        {doctors?.map((doctor, index) => (
           <Grid key={index} lg={3} item>
             <Card
               sx={{
@@ -82,11 +84,12 @@ const Doctors = () => {
                   {doctor.name}
                 </Typography>
                 <Typography
+                  sx={{ textTransform: "capitalize" }}
                   className="job"
                   variant="body2"
                   color="text.secondary"
                 >
-                  {doctor.job}
+                  {doctor.position} doctor
                 </Typography>
               </CardContent>
             </Card>

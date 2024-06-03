@@ -13,6 +13,7 @@ import {
   useLoginUserMutation,
   useRegisterUserMutation,
 } from "../services/Auth.service";
+import { Cookie } from "@mui/icons-material";
 
 const AuthContext = createContext();
 
@@ -30,7 +31,7 @@ export const AuthProvider = ({ children }) => {
     isError,
     isLoading,
     error,
-  } = useGetUserProfileQuery({
+  } = useGetUserProfileQuery(Cookies.get("token"), {
     skip: !Cookies.get("token"),
   });
 
@@ -57,19 +58,21 @@ export const AuthProvider = ({ children }) => {
       setAuthError(error?.data.message);
     }
   };
-
   useEffect(() => {
-    console.log(userInfo);
     setAuthError(null);
-    console.log(userInfo);
-    if (!userInfo) {
+    let isLoggedIn = loggedIn();
+    if (isLoading) {
+      // Do nothing while loading
+      return;
+    }
+    if (isLoggedIn && (!userInfo || isError)) {
       setUser(null);
-      navigate("/auth/login");
       Cookies.remove("token");
+      navigate("/auth/login");
     } else {
       setUser(userInfo);
     }
-  }, [userInfo]);
+  }, [userInfo, isError, navigate, isLoading]);
 
   const logout = () => {
     Cookies.remove("token");
@@ -94,7 +97,6 @@ export const AuthProvider = ({ children }) => {
     }),
     [user, authError],
   );
-
   return (
     <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
   );

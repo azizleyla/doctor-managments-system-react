@@ -46,7 +46,6 @@ const Login = () => {
   const onSubmit = async (values) => {
     handleLogin(values);
   };
-  console.log(authError);
 
   return (
     <AuthProvider>

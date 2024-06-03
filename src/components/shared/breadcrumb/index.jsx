@@ -11,7 +11,6 @@ const Breadcrumb = () => {
     [pathname],
   );
 
-  console.log(pathnameArray);
   return (
     <Breadcrumbs
       sx={{ marginBottom: "20px" }}
