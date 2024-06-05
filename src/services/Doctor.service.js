@@ -9,17 +9,25 @@ export const doctorsApi = createApi({
     tagTypes: ['doctors'],
     endpoints: (builder) => ({
         getDoctors: builder.query({
-            query: (data) => ({
+            query: () => ({
                 url: `/doctors`,
                 method: "GET",
-                data,
             }),
 
             providesTags: ['doctors']
         }),
-
-
+        addDoctor: builder.mutation({
+            query: (data) => ({
+                url: "doctors/add-doctor",
+                method: 'POST',
+                data,
+                headers: {
+                    'Content-Type': 'multipart/form-data;'
+                },
+            }),
+            invalidatesTags: ['doctors']
+        })
     })
 })
 
-export const { useGetDoctorsQuery } = doctorsApi;
+export const { useGetDoctorsQuery, useAddDoctorMutation } = doctorsApi;

@@ -16,7 +16,6 @@ import { useGetDoctorsQuery } from "../../services/Doctor.service";
 const Doctors = () => {
   const navigate = useNavigate();
   const { data: doctors, isLoading, isError } = useGetDoctorsQuery();
-  console.log(doctors);
   return (
     <Box>
       <Stack
@@ -61,7 +60,7 @@ const Doctors = () => {
               >
                 <img
                   style={{ width: "100%", height: "auto" }}
-                  src={doctor.photo}
+                  src={`http://localhost:8080/${doctor.img_path}`}
                 />
               </Box>
               <CardContent
@@ -74,6 +73,7 @@ const Doctors = () => {
                 }}
               >
                 <Typography
+                  sx={{ textTransform: "capitalize" }}
                   fontWeight="600"
                   fontSize="16px"
                   gutterBottom
@@ -81,7 +81,7 @@ const Doctors = () => {
                   component="a"
                   to="/"
                 >
-                  {doctor.name}
+                  {doctor.firstname} {doctor.lastname}
                 </Typography>
                 <Typography
                   sx={{ textTransform: "capitalize" }}
