@@ -21,7 +21,7 @@ a {
 
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: #f8f9fa;
+  background-color: #F5F5F6;
 }
 
 .MuiDrawer-root {
@@ -60,4 +60,8 @@ main {
 
 .MuiListItem-root {
   padding-left: 0;
+}
+
+.MuiDataGrid-root {
+  background-color: #fff;
 }

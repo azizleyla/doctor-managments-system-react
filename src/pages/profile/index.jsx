@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useAuth } from "../../hooks/useAuth";
-import { format } from "date-fns";
 import moment from "moment/moment";
 
 const Profile = () => {

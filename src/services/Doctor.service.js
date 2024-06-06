@@ -26,8 +26,15 @@ export const doctorsApi = createApi({
                 },
             }),
             invalidatesTags: ['doctors']
+        }),
+        deleteDoctor: builder.mutation({
+            query: (id) => ({
+                url: `doctors/deletes/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['doctors']
         })
     })
 })
 
-export const { useGetDoctorsQuery, useAddDoctorMutation } = doctorsApi;
+export const { useGetDoctorsQuery, useDeleteDoctorMutation, useAddDoctorMutation } = doctorsApi;
