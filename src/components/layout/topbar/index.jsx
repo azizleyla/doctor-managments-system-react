@@ -128,10 +128,7 @@ const Topbar = () => {
             alignItems="center"
           >
             {user?.photo ? (
-              <Avatar
-                sx={{ boxShadow: "0 0 3px #3c485826" }}
-                src="https://doctris-react-admin.vercel.app/static/media/01.d8b9651b2a3ba6336221.jpg"
-              />
+              <Avatar sx={{ boxShadow: "0 0 3px #3c485826" }} />
             ) : (
               <Avatar {...stringAvatar(user?.username)} />
             )}

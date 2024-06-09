@@ -1,5 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import axiosBaseQuery from "./axiosBaseQuery";
+import { ADD_DOCTOR, DELETE_DOCTOR, GET_DOCTORS } from "../utils/serviceRoutes/doctor.service.routes";
 
 export const Auth_key = "doctorsApi";
 
@@ -10,7 +11,7 @@ export const doctorsApi = createApi({
     endpoints: (builder) => ({
         getDoctors: builder.query({
             query: () => ({
-                url: `/doctors`,
+                url: GET_DOCTORS,
                 method: "GET",
             }),
 
@@ -18,7 +19,7 @@ export const doctorsApi = createApi({
         }),
         addDoctor: builder.mutation({
             query: (data) => ({
-                url: "doctors/add-doctor",
+                url: ADD_DOCTOR,
                 method: 'POST',
                 data,
                 headers: {
@@ -29,7 +30,7 @@ export const doctorsApi = createApi({
         }),
         deleteDoctor: builder.mutation({
             query: (id) => ({
-                url: `doctors/deletes/${id}`,
+                url: `${DELETE_DOCTOR}${id}`,
                 method: 'DELETE',
             }),
             invalidatesTags: ['doctors']

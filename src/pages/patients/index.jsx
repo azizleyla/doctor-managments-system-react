@@ -12,6 +12,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Dialog from "../../components/shared/dialog";
 import ShortInfo from "./components/ShortInfo";
+import { ErrorBoundary } from "../../components/shared/ErrorBoundary";
 
 const rows = [
   {
@@ -219,7 +220,7 @@ const PatientsList = () => {
   ];
 
   return (
-    <div>
+    <ErrorBoundary>
       <MuiDataTable
         sx={{
           "&.MuiDataGrid-root": {
@@ -243,7 +244,7 @@ const PatientsList = () => {
       >
         {allInfoDialog.component}
       </Dialog>
-    </div>
+    </ErrorBoundary>
   );
 };
 

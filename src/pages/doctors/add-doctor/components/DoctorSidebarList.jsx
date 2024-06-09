@@ -1,6 +1,5 @@
 import { Box, Button, List, ListItem, Typography } from "@mui/material";
 import React from "react";
-import { data } from "./constants";
 import { useNavigate } from "react-router-dom";
 
 const DoctorSidebarList = () => {
@@ -17,7 +16,7 @@ const DoctorSidebarList = () => {
       </Typography>
       <Box sx={{ height: "100%", maxHeight: "500px" }}>
         <List sx={{ padding: "20px 0", borderTop: "1px solid #e9ecef" }}>
-          {data.map((item, index) => (
+          {/* {data?.map((item, index) => (
             <ListItem
               key={index}
               alignItems="flex-start"
@@ -49,7 +48,7 @@ const DoctorSidebarList = () => {
                 </Typography>
               </Box>
             </ListItem>
-          ))}
+          ))} */}
         </List>
         <Button
           onClick={() => {

@@ -1,12 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
-  Card,
-  CardContent,
-  Grid,
   IconButton,
+  Menu,
+  MenuItem,
   Stack,
   Typography,
 } from "@mui/material";
@@ -16,16 +15,27 @@ import {
   useGetDoctorsQuery,
 } from "../../services/Doctor.service";
 import MuiDataTable from "../../components/shared/table";
+import moment from "moment";
+import { ErrorBoundary } from "../../components/shared/ErrorBoundary";
+import Fade from "@mui/material/Fade";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditIcon from "@mui/icons-material/Edit";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import moment from "moment";
-
 const Doctors = () => {
   const navigate = useNavigate();
   const { data: doctors, isLoading, isError } = useGetDoctorsQuery();
 
   const [deleteDoctor] = useDeleteDoctorMutation();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const columns = [
     {
       field: "name",
@@ -86,69 +96,39 @@ const Doctors = () => {
       width: 160,
       renderCell: (record) => {
         return (
-          <Stack
-            sx={{ marginTop: "6px" }}
-            alignItems="center"
-            direction="row"
-            spacing={2}
-          >
-            <IconButton
-              sx={{
-                width: "36px",
-                height: "36px",
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                background: "#396cf01a",
-                border: "1px solid #396cf01a",
-                boxShadow: "0 3px 5px 0 #396cf04d",
-              }}
-              variant="outlined"
-              color="warning"
-              size="small"
+          <>
+            <Button
+              id="fade-button"
+              aria-controls={open ? "fade-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+              onClick={handleClick}
             >
-              <VisibilityIcon
-                sx={{ fontSize: "16px", color: "#396cf0" }}
-              />
-            </IconButton>
-            <IconButton
-              sx={{
-                width: "36px",
-                height: "36px",
-                border: "1px solid #53c7971a",
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                background: "#53c7971a",
-                boxShadow: "0 3px 5px 0 #53c7971a",
+              <MoreVertIcon />
+            </Button>
+            <Menu
+              id="fade-menu"
+              MenuListProps={{
+                "aria-labelledby": "fade-button",
               }}
-              variant="outlined"
-              color="warning"
-              size="small"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              TransitionComponent={Fade}
             >
-              <EditIcon sx={{ fontSize: "16px", color: "#53c797" }} />
-            </IconButton>
-            <IconButton
-              onClick={() => handleDelete(record.row.id)}
-              sx={{
-                background: "#f0735a1a",
-                border: "1px solid #f0735a1a",
-                width: "36px",
-                height: "36px",
-                borderRadius: "50%",
-                display: "flex",
-                alignItems: "center",
-                boxShadow: "0 3px 5px 0 #f0735a1a",
-              }}
-              variant="outlined"
-              color="error"
-              size="small"
-            >
-              <DeleteOutlineIcon
-                sx={{ fontSize: "16px", color: "#f0735a" }}
-              />
-            </IconButton>
-          </Stack>
+              <MenuItem onClick={handleClose}>
+                <EditIcon sx={{ fontSize: "20px", marginRight: "4px" }} />
+                Edit
+              </MenuItem>
+              <MenuItem onClick={() => handleDelete(record.row.id)}>
+                <DeleteOutlineIcon
+                  sx={{ fontSize: "20px", marginRight: "4px" }}
+                />
+                Delete
+              </MenuItem>
+              {/* <MenuItem onClick={handleClose}></MenuItem> */}
+            </Menu>
+          </>
         );
       },
     },
@@ -160,33 +140,35 @@ const Doctors = () => {
   const handleDelete = async (id) => {
     await deleteDoctor(id)
       .unwrap()
-      .then((payload) => console.log(payload))
+      .then((payload) => handleClose())
       .catch((error) => console.log(error));
   };
   return (
-    <Box>
-      <Stack
-        display="flex"
-        flexDirection="row"
-        justifyContent="space-between"
-      >
-        <Typography component="h5" fontSize="1.2rem" fontWight="600">
-          Doctors
-        </Typography>
-        <Button
-          onClick={() => navigate("/doctors/add-doctor")}
-          color="primary"
-          variant="contained"
+    <ErrorBoundary>
+      <Box>
+        <Stack
+          display="flex"
+          flexDirection="row"
+          justifyContent="space-between"
         >
-          Add New Doctor
-        </Button>
-      </Stack>
-      <MuiDataTable
-        sx={{ marginTop: "20px" }}
-        rows={doctors}
-        columns={columns}
-      />
-    </Box>
+          <Typography component="h5" fontSize="1.2rem" fontWeight="600">
+            Doctors
+          </Typography>
+          <Button
+            onClick={() => navigate("/doctors/add-doctor")}
+            color="primary"
+            variant="contained"
+          >
+            Add New Doctor
+          </Button>
+        </Stack>
+        <MuiDataTable
+          sx={{ marginTop: "20px" }}
+          rows={doctors}
+          columns={columns}
+        />
+      </Box>
+    </ErrorBoundary>
   );
 };
 

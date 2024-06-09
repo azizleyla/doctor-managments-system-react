@@ -5,7 +5,7 @@ const SkeletonLoading = ({ children, count }) => {
   const skeletons = Array(count)
     .fill(null)
     .map((_, index) => (
-      <Grid item lg={3}>
+      <Grid key={index} item lg={3}>
         {children}
       </Grid>
     ));

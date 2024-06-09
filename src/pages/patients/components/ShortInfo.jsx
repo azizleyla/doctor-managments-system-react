@@ -13,10 +13,6 @@ const ShortInfo = () => {
   return (
     <Box>
       <Stack direction="row" spacing={2} alignItems="center">
-        <Avatar
-          sx={{ width: "65px", height: "65px" }}
-          src="https://doctris-react-admin.vercel.app/static/media/01.6ac85de7298319b1f8d5.jpg"
-        />
         <Typography fontSize="17px" variant="h5" fontWeight={600}>
           Thomas Joyer
         </Typography>

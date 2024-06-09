@@ -8,6 +8,7 @@ import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@mui/material";
 import { Provider } from "react-redux";
 import store from "./store";
+import HelmetProvider from "./HelmetProvider.jsx";
 
 const theme = createTheme({
   typography: {
@@ -22,11 +23,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <BrowserRouter>
-        <Provider store={store}>
-          <AuthProvider>
-            <App />
-          </AuthProvider>
-        </Provider>
+        <HelmetProvider>
+          <Provider store={store}>
+            <AuthProvider>
+              <App />
+            </AuthProvider>
+          </Provider>
+        </HelmetProvider>
       </BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>,
