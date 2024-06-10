@@ -24,13 +24,15 @@ import EditIcon from "@mui/icons-material/Edit";
 const Doctors = () => {
   const navigate = useNavigate();
   const { data: doctors, isLoading, isError } = useGetDoctorsQuery();
+  const [selectedDoctorId, setSelectedDoctorId] = useState(null);
 
   const [deleteDoctor] = useDeleteDoctorMutation();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
-  const handleClick = (event) => {
+  const handleClick = (event, id) => {
     setAnchorEl(event.currentTarget);
+    setSelectedDoctorId(id);
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -102,7 +104,7 @@ const Doctors = () => {
               aria-controls={open ? "fade-menu" : undefined}
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
-              onClick={handleClick}
+              onClick={(e) => handleClick(e, record.row.id)}
             >
               <MoreVertIcon />
             </Button>
@@ -112,7 +114,7 @@ const Doctors = () => {
                 "aria-labelledby": "fade-button",
               }}
               anchorEl={anchorEl}
-              open={open}
+              open={selectedDoctorId === record.row.id && open}
               onClose={handleClose}
               TransitionComponent={Fade}
             >
@@ -133,9 +135,6 @@ const Doctors = () => {
       },
     },
   ];
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
 
   const handleDelete = async (id) => {
     await deleteDoctor(id)
@@ -143,6 +142,7 @@ const Doctors = () => {
       .then((payload) => handleClose())
       .catch((error) => console.log(error));
   };
+  if (isLoading) return <p>Loading..</p>;
   return (
     <ErrorBoundary>
       <Box>

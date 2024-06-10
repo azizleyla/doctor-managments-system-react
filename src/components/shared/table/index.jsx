@@ -10,6 +10,7 @@ export default function MuiDataTable({ rows, columns, sx }) {
           ...sx,
         }}
         rows={rows}
+        disableColumnResize={true}
         columns={columns}
         initialState={{
           pagination: {

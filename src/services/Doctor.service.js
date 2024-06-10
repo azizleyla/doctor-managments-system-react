@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import axiosBaseQuery from "./axiosBaseQuery";
-import { ADD_DOCTOR, DELETE_DOCTOR, GET_DOCTORS } from "../utils/serviceRoutes/doctor.service.routes";
+import { ADD_DOCTOR, DELETE_DOCTOR, GET_DOCTORS } from "../utils/serviceRoutes/doctors";
 
 export const Auth_key = "doctorsApi";
 

@@ -2,7 +2,7 @@ import { Box, Grid, Typography } from "@mui/material";
 import React from "react";
 import DoctorForm from "./components/DoctorForm";
 import DoctorSidebarList from "./components/DoctorSidebarList";
-import { ErrorBoundary } from "../../../components/shared/ErrorBoundary";
+import ErrorBoundary from "../../../components/shared/ErrorBoundary";
 
 const AddDoctorPage = () => {
   return (
