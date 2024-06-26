@@ -29,7 +29,10 @@ export const authApi = createApi({
                 url: "auth/profile", // Adjust this URL based on your backend endpoint for fetching profiles
                 method: "GET"
             }),
-            providesTags: ['auth']
+            providesTags: ['auth'],
+            transformResponse: (response) => {
+                return response.data
+            },
         })
 
     })

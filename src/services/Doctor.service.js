@@ -14,8 +14,12 @@ export const doctorsApi = createApi({
                 url: GET_DOCTORS,
                 method: "GET",
             }),
+            transformResponse: (response) => {
+                // Transform the response data as needed
+                return response.data; // Example: if the data is nested under a "data" key
+            },
+            providesTags: ['doctors'],
 
-            providesTags: ['doctors']
         }),
         addDoctor: builder.mutation({
             query: (data) => ({

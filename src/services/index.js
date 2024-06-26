@@ -22,6 +22,7 @@ axiosInstance.interceptors.request.use(
 );
 axios.interceptors.response.use((response) => {
     if (response.config.parse) {
+        return response.data
         //perform the manipulation here and change the response object
     }
     return response;

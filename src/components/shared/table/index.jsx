@@ -6,6 +6,7 @@ export default function MuiDataTable({ rows, columns, sx }) {
   return (
     <Box sx={{ height: 600, width: "100%" }}>
       <DataGrid
+        getRowId={(row) => row._id}
         sx={{
           ...sx,
         }}

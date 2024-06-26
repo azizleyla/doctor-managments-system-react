@@ -7,6 +7,7 @@ import SkeletonLoading from "./components/shared/skeleton/SkeletonLoading";
 import CardSkeleton from "./pages/doctors/CardSkeleton";
 import Profile from "./pages/profile";
 import HelmetProvider from "./HelmetProvider";
+import DynamicImport from "./components/shared/DynamicImport";
 
 const LoginPage = lazy(() => import("./pages/login"));
 const SignUpPage = lazy(() => import("./pages/signup"));
@@ -17,48 +18,47 @@ const PatientsPage = lazy(() => import("./pages/patients"));
 function App() {
   return (
     <Suspense fallback={<p>Loading..</p>}>
-        <Routes>
+      <Routes>
+        <Route
+          path="/auth"
+          element={
+            <ProtectedRoute isAuthPage>
+              <Outlet />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="signup" element={<SignUpPage />} />
+          <Route path="login" element={<LoginPage />} />
+        </Route>
+
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
           <Route
-            path="/auth"
-            element={
-              <ProtectedRoute isAuthPage>
-                <Outlet />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="signup" element={<SignUpPage />} />
-            <Route path="login" element={<LoginPage />} />
-          </Route>
+            path="doctors"
+            element={<DynamicImport component={DoctorsPage} />}
+          />
+          <Route
+            path="profile"
+            element={<DynamicImport element={<Profile />} />}
+          />
 
           <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Layout />
-              </ProtectedRoute>
-            }
-          >
-            <Route
-              path="doctors"
-              element={
-                <Suspense
-                  fallback={
-                    <SkeletonLoading count={5}>
-                      <CardSkeleton />
-                    </SkeletonLoading>
-                  }
-                >
-                  <DoctorsPage />
-                </Suspense>
-              }
-            />
-            <Route path="profile" element={<Profile />} />
-
-            <Route path="doctors/add-doctor" element={<AddDoctorPage />} />
-            <Route path="patients" element={<PatientsPage />} />
-          </Route>
-          <Route path="*" element={<p>There's nothing here: 404!</p>} />
-        </Routes>
+            path="doctors/add-doctor"
+            element={<DynamicImport component={AddDoctorPage} />}
+          />
+          <Route
+            path="patients"
+            element={<DynamicImport component={PatientsPage} />}
+          />
+        </Route>
+        <Route path="*" element={<p>There's nothing here: 404!</p>} />
+      </Routes>
     </Suspense>
   );
 }

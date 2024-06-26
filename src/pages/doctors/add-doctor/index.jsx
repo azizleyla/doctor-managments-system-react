@@ -3,6 +3,8 @@ import React from "react";
 import DoctorForm from "./components/DoctorForm";
 import DoctorSidebarList from "./components/DoctorSidebarList";
 import ErrorBoundary from "../../../components/shared/ErrorBoundary";
+import * as yup from "yup";
+
 
 const AddDoctorPage = () => {
   return (

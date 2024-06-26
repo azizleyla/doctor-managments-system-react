@@ -33,11 +33,12 @@ const Topbar = () => {
   };
 
   function stringAvatar(name) {
+    console.log(name);
     return {
       sx: {
         bgcolor: "#1F6CFA",
       },
-      children: `${name?.split(" ")[0][0]}${name?.split(" ")[1][0]}`,
+      // children: `${name?.split(" ")[0][0]}${name?.split(" ")[1][0]}`,
     };
   }
 

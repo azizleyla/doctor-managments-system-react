@@ -21,6 +21,7 @@ import Fade from "@mui/material/Fade";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditIcon from "@mui/icons-material/Edit";
+
 const Doctors = () => {
   const navigate = useNavigate();
   const { data: doctors, isLoading, isError } = useGetDoctorsQuery();
@@ -37,7 +38,7 @@ const Doctors = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  console.log(doctors);
   const columns = [
     {
       field: "name",
@@ -82,15 +83,7 @@ const Doctors = () => {
       sortable: false,
       width: 160,
     },
-    {
-      field: "createdAt",
-      headerName: "Joining Date",
-      sortable: true,
-      width: 160,
-      renderCell: (record) => {
-        return <>{moment(record.row.createdAt).format("MM.DD.YYYY")}</>;
-      },
-    },
+
     {
       field: "action",
       headerName: "Actions",
@@ -122,7 +115,7 @@ const Doctors = () => {
                 <EditIcon sx={{ fontSize: "20px", marginRight: "4px" }} />
                 Edit
               </MenuItem>
-              <MenuItem onClick={() => handleDelete(record.row.id)}>
+              <MenuItem onClick={() => handleDelete(record.row._id)}>
                 <DeleteOutlineIcon
                   sx={{ fontSize: "20px", marginRight: "4px" }}
                 />

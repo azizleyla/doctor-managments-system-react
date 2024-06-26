@@ -31,7 +31,7 @@ const Login = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm({
     resolver: yupResolver(schema),
   });
@@ -174,6 +174,7 @@ const Login = () => {
             </Link>
 
             <Button
+              disabled={!isValid}
               sx={{ margin: "30px 0" }}
               type="submit"
               fullWidth

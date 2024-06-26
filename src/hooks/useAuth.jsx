@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { isTokenExpired } from "../utils/helpers/helpers";
 import {
@@ -34,6 +34,10 @@ export const AuthProvider = ({ children }) => {
   } = useGetUserProfileQuery(Cookies.get("token"), {
     skip: !Cookies.get("token"),
   });
+  const { search } = useLocation();
+  const sp = new URLSearchParams(search);
+  console.log(sp);
+  const redirect = sp.get("redirect") || "/";
 
   const handleLogin = async (values) => {
     try {
@@ -41,7 +45,7 @@ export const AuthProvider = ({ children }) => {
       setUser(response.user);
       Cookies.set("token", response.token);
       setAuthError(null);
-      navigate("/auth/login");
+      navigate(redirect);
     } catch (error) {
       if (error.data) {
         setAuthError(error.data?.message);
@@ -67,8 +71,7 @@ export const AuthProvider = ({ children }) => {
     }
     if (isLoggedIn && (!userInfo || isError)) {
       setUser(null);
-      Cookies.remove("token");
-      navigate("/auth/login");
+      // navigate("/auth/login");
     } else {
       setUser(userInfo);
     }

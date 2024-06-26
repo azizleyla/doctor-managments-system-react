@@ -1,4 +1,11 @@
-import { Box, Button, FormLabel, Grid, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormLabel,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
@@ -6,15 +13,40 @@ import "./style.scss";
 import { useAddDoctorMutation } from "../../../../services/Doctor.service";
 import { useNavigate } from "react-router-dom";
 import FileUpload from "../../../../components/shared/fileupload";
+import * as yup from "yup";
+
+import { yupResolver } from "@hookform/resolvers/yup";
+
+const schema = yup
+  .object({
+    firstname: yup.string().required("firstname is required"),
+    lastname: yup.string().required("lastname is required"),
+  })
+  .required();
 
 const DoctorForm = () => {
   const [addDoctor] = useAddDoctorMutation();
-  const { control, handleSubmit } = useForm();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      email: "",
+      bio: "",
+      gender: "",
+      position: "",
+      firstname: "",
+      lastname: "",
+    },
+  });
   const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState(null);
 
   const onSubmit = async (values) => {
     const { gender, position } = values;
+
     const formData = new FormData();
     formData.append("gender", gender?.value);
     formData.append("position", position?.value);
@@ -43,6 +75,7 @@ const DoctorForm = () => {
           <Grid item md={6}>
             <FormLabel>First Name</FormLabel>
             <Controller
+              rules={{ required: true }}
               style={{ width: "100%" }}
               control={control}
               name="firstname"
@@ -50,17 +83,30 @@ const DoctorForm = () => {
                 <TextField placeholder="First Name:" {...field} />
               )}
             />
+            <Typography
+              variant="span"
+              sx={{ color: "red", fontSize: "10px" }}
+            >
+              {errors?.firstname?.message}
+            </Typography>
           </Grid>
 
           <Grid item md={6}>
             <FormLabel>Last Name</FormLabel>
             <Controller
+              rules={{ required: true }}
               control={control}
               name="lastname"
               render={({ field }) => (
                 <TextField placeholder="Last Name" {...field} />
               )}
             />
+            <Typography
+              variant="span"
+              sx={{ color: "red", fontSize: "10px" }}
+            >
+              {errors?.lastname?.message}
+            </Typography>
           </Grid>
           <Grid item md={6}>
             <FormLabel>Email</FormLabel>
@@ -131,7 +177,19 @@ const DoctorForm = () => {
             />
           </Grid>
         </Grid>
-        <FileUpload setFile={setSelectedFile} />
+        <Box
+          sx={{
+            maxWidth: "600px",
+            margin: "0 auto",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px",
+            border: "3px dashed green",
+          }}
+        >
+          <FileUpload file={selectedFile} setFile={setSelectedFile} />
+        </Box>
         <Button
           type="submit"
           sx={{ marginTop: "20px" }}

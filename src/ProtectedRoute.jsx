@@ -8,11 +8,11 @@ const ProtectedRoute = ({ isAuthPage, children }) => {
   const { loggedIn } = useAuth();
   const isAuthenticated = loggedIn();
 
-  if (isAuthPage && isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
-
+  // if (isAuthPage && isAuthenticated) {
+  //   return <Navigate to="/" replace />;
+  // }
   if (!isAuthPage && !isAuthenticated) {
+
     return <Navigate to="/auth/login" replace />;
   }
 
