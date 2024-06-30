@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   Grid,
-  Skeleton as MuiSkeleton,
   Typography,
 } from "@mui/material";
 

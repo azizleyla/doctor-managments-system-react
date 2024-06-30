@@ -14,9 +14,9 @@ import {
   useDeleteDoctorMutation,
   useGetDoctorsQuery,
 } from "../../services/Doctor.service";
-import MuiDataTable from "../../components/shared/table";
+import MuiDataTable from "../../UI_library/Molecules/table";
 import moment from "moment";
-import { ErrorBoundary } from "../../components/shared/ErrorBoundary";
+import { ErrorBoundary } from "../../utils/ErrorBoundary";
 import Fade from "@mui/material/Fade";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";

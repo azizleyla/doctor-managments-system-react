@@ -3,7 +3,7 @@ import Sidebar from "./sidebar";
 import Topbar from "./topbar";
 import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import Breadcrumb from "../shared/breadcrumb";
+import Breadcrumb from "../../UI_library/Molecules/breadcrumb";
 import clsx from "clsx";
 
 export const SidebarContext = createContext();

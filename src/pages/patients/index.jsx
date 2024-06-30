@@ -1,18 +1,12 @@
 import React, { useState } from "react";
-import MuiDataTable from "../../components/shared/table";
-import {
-  Button,
-  DialogActions,
-  IconButton,
-  Stack,
-  Typography,
-} from "@mui/material";
+import MuiDataTable from "../../UI_library/Molecules/table";
+import { IconButton, Stack } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import Dialog from "../../components/shared/dialog";
 import ShortInfo from "./components/ShortInfo";
-import { ErrorBoundary } from "../../components/shared/ErrorBoundary";
+import { ErrorBoundary } from "../../utils/ErrorBoundary";
+import PopupDialog from "../../UI_library/Molecules/PopupDialog";
 
 const rows = [
   {
@@ -233,7 +227,7 @@ const PatientsList = () => {
         rows={rows}
         columns={columns}
       />
-      <Dialog
+      <PopupDialog
         fullWidth
         maxWidth="sm"
         title={allInfoDialog.title}
@@ -243,7 +237,7 @@ const PatientsList = () => {
         allInfoDialog={allInfoDialog.open}
       >
         {allInfoDialog.component}
-      </Dialog>
+      </PopupDialog>
     </ErrorBoundary>
   );
 };

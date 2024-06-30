@@ -38,7 +38,7 @@ const DialogTitle = ({ handleClose, title }) => {
   );
 };
 
-const Dialog = ({
+const PopupDialog = ({
   title,
   buttons,
   children,
@@ -72,4 +72,4 @@ const Dialog = ({
   );
 };
 
-export default Dialog;
+export default PopupDialog;

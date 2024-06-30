@@ -1,6 +1,7 @@
 import { Backdrop, Box, Typography } from "@mui/material";
+import "./style.scss";
 
-function Loader({ loading = false, children }) {
+function LinearLoader({ loading = false, children }) {
   return (
     <>
       {loading ? (
@@ -61,4 +62,4 @@ function Loader({ loading = false, children }) {
   );
 }
 
-export default Loader;
+export default LinearLoader;

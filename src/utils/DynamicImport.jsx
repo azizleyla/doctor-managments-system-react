@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import Loader from "./loader";
+import { LinearLoader } from "../UI_library/Atoms/loader";
 
 const DynamicImport = (props) => {
   const Component = props.component;
@@ -7,7 +7,7 @@ const DynamicImport = (props) => {
     <Suspense
       fallback={
         <div className="flex items-center justify-center h-screen bg-gray-100">
-          <Loader loading={true} />
+          <LinearLoader loading={true} />
         </div>
       }
     >

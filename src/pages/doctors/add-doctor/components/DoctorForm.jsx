@@ -12,10 +12,10 @@ import Select from "react-select";
 import "./style.scss";
 import { useAddDoctorMutation } from "../../../../services/Doctor.service";
 import { useNavigate } from "react-router-dom";
-import FileUpload from "../../../../components/shared/fileupload";
+import FileUpload from "../../../../UI_library/Molecules/fileupload";
 import * as yup from "yup";
-
 import { yupResolver } from "@hookform/resolvers/yup";
+import { singleDropzoneOptions } from "../../../../utils/constants";
 
 const schema = yup
   .object({
@@ -35,14 +35,19 @@ const DoctorForm = () => {
     defaultValues: {
       email: "",
       bio: "",
-      gender: "",
-      position: "",
+      gender: { value: "" },
+      position: { value: "" },
       firstname: "",
       lastname: "",
     },
   });
   const navigate = useNavigate();
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+
+  // const handleUpload = (files) => {
+  //   console.log(files);
+  //   setSelectedFile(files[0]);
+  // };
 
   const onSubmit = async (values) => {
     const { gender, position } = values;
@@ -50,8 +55,9 @@ const DoctorForm = () => {
     const formData = new FormData();
     formData.append("gender", gender?.value);
     formData.append("position", position?.value);
-    if (selectedFile) {
-      formData.append("img_path", selectedFile);
+    // console.log(selectedFile);
+    if (selectedFiles) {
+      formData.append("img_path", selectedFiles[0]);
     }
 
     Object.keys(values).forEach((key) => {
@@ -188,7 +194,10 @@ const DoctorForm = () => {
             border: "3px dashed green",
           }}
         >
-          <FileUpload file={selectedFile} setFile={setSelectedFile} />
+          <FileUpload
+            options={singleDropzoneOptions}
+            setSelectedFiles={setSelectedFiles}
+          />
         </Box>
         <Button
           type="submit"

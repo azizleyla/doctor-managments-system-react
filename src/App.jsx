@@ -1,14 +1,11 @@
 import { Suspense, lazy } from "react";
 import "./App.css";
-import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { Outlet, Route, Routes } from "react-router-dom";
 import Layout from "./components/layout";
 import ProtectedRoute from "./ProtectedRoute";
-import SkeletonLoading from "./components/shared/skeleton/SkeletonLoading";
-import CardSkeleton from "./pages/doctors/CardSkeleton";
-import Profile from "./pages/profile";
-import HelmetProvider from "./HelmetProvider";
-import DynamicImport from "./components/shared/DynamicImport";
+import DynamicImport from "./utils/DynamicImport";
 
+const ProfilePage = lazy(() => import("./pages/profile"));
 const LoginPage = lazy(() => import("./pages/login"));
 const SignUpPage = lazy(() => import("./pages/signup"));
 const DoctorsPage = lazy(() => import("./pages/doctors"));
@@ -45,7 +42,7 @@ function App() {
           />
           <Route
             path="profile"
-            element={<DynamicImport element={<Profile />} />}
+            element={<DynamicImport component={ProfilePage} />}
           />
 
           <Route
