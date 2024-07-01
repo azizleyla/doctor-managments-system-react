@@ -8,7 +8,7 @@ import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@mui/material";
 import { Provider } from "react-redux";
 import store from "./store";
-import HelmetProvider from "./HelmetProvider.jsx";
+import HelmetProvider from "./utils/HelmetProvider.jsx";
 
 const theme = createTheme({
   typography: {

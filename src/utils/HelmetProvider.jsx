@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Helmet } from "react-helmet";
-import { shortMenuLinks } from "./components/layout/sidebar/constants";
+import { shortMenuLinks } from "../components/layout/sidebar/constants";
 import { useLocation } from "react-router-dom";
 
 const HelmetProvider = ({ children }) => {

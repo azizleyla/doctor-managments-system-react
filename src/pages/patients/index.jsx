@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import MuiDataTable from "../../UI_library/Molecules/table";
 import { IconButton, Stack } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ShortInfo from "./components/ShortInfo";
 import { ErrorBoundary } from "../../utils/ErrorBoundary";
-import PopupDialog from "../../UI_library/Molecules/PopupDialog";
+import { MuiDataTable, PopupDialog } from "../../UI_library";
 
 const rows = [
   {

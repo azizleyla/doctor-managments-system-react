@@ -6,16 +6,16 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import "./style.scss";
 import { useAddDoctorMutation } from "../../../../services/Doctor.service";
 import { useNavigate } from "react-router-dom";
-import FileUpload from "../../../../UI_library/Molecules/fileupload";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { singleDropzoneOptions } from "../../../../utils/constants";
+import { FileUpload } from "../../../../UI_library";
 
 const schema = yup
   .object({
@@ -24,21 +24,26 @@ const schema = yup
   })
   .required();
 
-const DoctorForm = () => {
+const DoctorForm = ({ data }) => {
   const [addDoctor] = useAddDoctorMutation();
+  console.log(data);
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      email: "",
-      bio: "",
-      gender: { value: "" },
-      position: { value: "" },
-      firstname: "",
-      lastname: "",
+      email: data?.email || "",
+      bio: data?.bio || "",
+      gender: { value: data?.gender || "", label: data?.gender || "" },
+      position: {
+        value: data?.position || "",
+        label: data?.position || "",
+      },
+      firstname: data?.firstname || "",
+      lastname: data?.lastname || "",
     },
   });
   const navigate = useNavigate();
@@ -73,7 +78,21 @@ const DoctorForm = () => {
       console.log(err);
     }
   };
-
+  useEffect(() => {
+    if (data) {
+      reset({
+        email: data.email,
+        bio: data.bio,
+        gender: { value: data.gender, label: data.gender },
+        position: {
+          value: data.position,
+          label: data.position,
+        },
+        firstname: data.firstname,
+        lastname: data.lastname,
+      });
+    }
+  }, [data, reset]);
   return (
     <Box className="doctorForm-box">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -114,7 +133,7 @@ const DoctorForm = () => {
               {errors?.lastname?.message}
             </Typography>
           </Grid>
-          <Grid item md={6}>
+          <Grid item md={12}>
             <FormLabel>Email</FormLabel>
             <Controller
               control={control}
@@ -183,17 +202,7 @@ const DoctorForm = () => {
             />
           </Grid>
         </Grid>
-        <Box
-          sx={{
-            maxWidth: "600px",
-            margin: "0 auto",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "20px",
-            border: "3px dashed green",
-          }}
-        >
+        <Box>
           <FileUpload
             options={singleDropzoneOptions}
             setSelectedFiles={setSelectedFiles}
@@ -205,7 +214,7 @@ const DoctorForm = () => {
           variant="contained"
           color="primary"
         >
-          Add Doctor
+          Save
         </Button>
       </form>
     </Box>

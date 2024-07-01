@@ -19,8 +19,7 @@ import moment from "moment";
 import { ErrorBoundary } from "../../utils/ErrorBoundary";
 import Fade from "@mui/material/Fade";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import EditIcon from "@mui/icons-material/Edit";
+import DropdownMenu from "./ActionsMenu.jsx";
 
 const Doctors = () => {
   const navigate = useNavigate();
@@ -28,16 +27,7 @@ const Doctors = () => {
   const [selectedDoctorId, setSelectedDoctorId] = useState(null);
 
   const [deleteDoctor] = useDeleteDoctorMutation();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
 
-  const handleClick = (event, id) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedDoctorId(id);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
   console.log(doctors);
   const columns = [
     {
@@ -91,39 +81,11 @@ const Doctors = () => {
       width: 160,
       renderCell: (record) => {
         return (
-          <>
-            <Button
-              id="fade-button"
-              aria-controls={open ? "fade-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-              onClick={(e) => handleClick(e, record.row.id)}
-            >
-              <MoreVertIcon />
-            </Button>
-            <Menu
-              id="fade-menu"
-              MenuListProps={{
-                "aria-labelledby": "fade-button",
-              }}
-              anchorEl={anchorEl}
-              open={selectedDoctorId === record.row.id && open}
-              onClose={handleClose}
-              TransitionComponent={Fade}
-            >
-              <MenuItem onClick={handleClose}>
-                <EditIcon sx={{ fontSize: "20px", marginRight: "4px" }} />
-                Edit
-              </MenuItem>
-              <MenuItem onClick={() => handleDelete(record.row._id)}>
-                <DeleteOutlineIcon
-                  sx={{ fontSize: "20px", marginRight: "4px" }}
-                />
-                Delete
-              </MenuItem>
-              {/* <MenuItem onClick={handleClose}></MenuItem> */}
-            </Menu>
-          </>
+          <ActionsMenu
+            handleDelete={handleDelete}
+            handleEdit={handleEdit}
+            record={record}
+          />
         );
       },
     },
@@ -135,7 +97,11 @@ const Doctors = () => {
       .then((payload) => handleClose())
       .catch((error) => console.log(error));
   };
-  if (isLoading) return <p>Loading..</p>;
+  const handleEdit = async (id) => {
+    console.log(id);
+    navigate(`/doctors/edit/${id}`);
+  };
+
   return (
     <ErrorBoundary>
       <Box>
@@ -155,11 +121,13 @@ const Doctors = () => {
             Add New Doctor
           </Button>
         </Stack>
-        <MuiDataTable
-          sx={{ marginTop: "20px" }}
-          rows={doctors}
-          columns={columns}
-        />
+        {doctors && (
+          <MuiDataTable
+            sx={{ marginTop: "20px" }}
+            rows={doctors}
+            columns={columns}
+          />
+        )}
       </Box>
     </ErrorBoundary>
   );

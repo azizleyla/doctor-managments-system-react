@@ -13,6 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useRef, useState } from "react";
+import "./style.scss";
 
 const FileUpload = ({ setSelectedFiles, options }) => {
   const [loading, setLoading] = useState(false);
@@ -101,15 +102,17 @@ const FileUpload = ({ setSelectedFiles, options }) => {
   return (
     <>
       <input
+        className="inputFile"
         onChange={handleFileChange}
         id="file-upload"
         type="file"
         ref={fileInputRef}
-        // style={{ display: "none" }}
+        style={{ display: "none" }}
       />
 
       <label htmlFor="file-upload">
         <div
+          className="dropzone"
           onDrop={(e) => handleDrop(e)}
           onDragOver={(e) => {
             // setDropzoneActive(true);
@@ -132,7 +135,7 @@ const FileUpload = ({ setSelectedFiles, options }) => {
         </div>
       </label>
 
-      <List>
+      <List className="files">
         {files.map((file, fileIndex) => {
           const progress = 25;
           return (

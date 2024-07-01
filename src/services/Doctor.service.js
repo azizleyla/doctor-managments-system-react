@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import axiosBaseQuery from "./axiosBaseQuery";
-import { ADD_DOCTOR, DELETE_DOCTOR, GET_DOCTORS } from "../utils/serviceRoutes/doctors";
+import { ADD_DOCTOR, DELETE_DOCTOR, GET_DOCTOR, GET_DOCTORS } from "../utils/serviceRoutes/doctors";
 
 export const Auth_key = "doctorsApi";
 
@@ -13,6 +13,18 @@ export const doctorsApi = createApi({
             query: () => ({
                 url: GET_DOCTORS,
                 method: "GET",
+            }),
+            transformResponse: (response) => {
+                // Transform the response data as needed
+                return response.data; // Example: if the data is nested under a "data" key
+            },
+            providesTags: ['doctors'],
+
+        }),
+        getDoctorById: builder.query({
+            query: (id) => ({
+                url: `${GET_DOCTOR}${id}`,
+                method: "GET"
             }),
             transformResponse: (response) => {
                 // Transform the response data as needed
@@ -42,4 +54,4 @@ export const doctorsApi = createApi({
     })
 })
 
-export const { useGetDoctorsQuery, useDeleteDoctorMutation, useAddDoctorMutation } = doctorsApi;
+export const { useGetDoctorsQuery, useGetDoctorByIdQuery, useDeleteDoctorMutation, useAddDoctorMutation } = doctorsApi;

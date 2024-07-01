@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { LinearLoader } from "../UI_library/Atoms/loader";
+import { LinearLoader } from "../UI_library/Molecules/loader";
 
 const DynamicImport = (props) => {
   const Component = props.component;

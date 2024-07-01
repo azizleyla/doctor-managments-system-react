@@ -3,8 +3,8 @@ import Sidebar from "./sidebar";
 import Topbar from "./topbar";
 import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import Breadcrumb from "../../UI_library/Molecules/breadcrumb";
 import clsx from "clsx";
+import { BreadCrumb } from "../../UI_library";
 
 export const SidebarContext = createContext();
 
@@ -31,7 +31,7 @@ const Layout = () => {
         <main className={clsx({ mainLeft: isOpenSidebar })}>
           <Topbar />
           <Box sx={{ padding: "94px 14px  24px" }}>
-            <Breadcrumb />
+            <BreadCrumb />
             <Outlet />
           </Box>
         </main>
