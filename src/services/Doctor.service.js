@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import axiosBaseQuery from "./axiosBaseQuery";
-import { ADD_DOCTOR, DELETE_DOCTOR, GET_DOCTOR, GET_DOCTORS } from "../utils/serviceRoutes/doctors";
+import { ADD_DOCTOR, DELETE_DOCTOR, GET_DOCTOR, GET_DOCTORS, UPDATE_DOCTOR } from "../utils/serviceRoutes/doctors";
 
 export const Auth_key = "doctorsApi";
 
@@ -44,6 +44,18 @@ export const doctorsApi = createApi({
             }),
             invalidatesTags: ['doctors']
         }),
+        updateDoctor: builder.mutation({
+            query: ({ doctorId, data }) => ({
+                url: `${UPDATE_DOCTOR}${doctorId}`,
+                method: 'PUT',
+                data,
+                headers: {
+                    'Content-Type': 'multipart/form-data;'
+                },
+            }),
+            invalidatesTags: ['doctors']
+
+        }),
         deleteDoctor: builder.mutation({
             query: (id) => ({
                 url: `${DELETE_DOCTOR}${id}`,
@@ -54,4 +66,4 @@ export const doctorsApi = createApi({
     })
 })
 
-export const { useGetDoctorsQuery, useGetDoctorByIdQuery, useDeleteDoctorMutation, useAddDoctorMutation } = doctorsApi;
+export const { useGetDoctorsQuery, useUpdateDoctorMutation, useGetDoctorByIdQuery, useDeleteDoctorMutation, useAddDoctorMutation } = doctorsApi;

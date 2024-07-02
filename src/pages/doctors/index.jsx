@@ -19,7 +19,7 @@ import moment from "moment";
 import { ErrorBoundary } from "../../utils/ErrorBoundary";
 import Fade from "@mui/material/Fade";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import DropdownMenu from "./ActionsMenu.jsx";
+import ActionsMenu from "./ActionsMenu";
 
 const Doctors = () => {
   const navigate = useNavigate();

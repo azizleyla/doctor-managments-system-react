@@ -10,7 +10,10 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Select from "react-select";
 import "./style.scss";
-import { useAddDoctorMutation } from "../../../../services/Doctor.service";
+import {
+  useAddDoctorMutation,
+  useUpdateDoctorMutation,
+} from "../../../../services/Doctor.service";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -19,14 +22,21 @@ import { FileUpload } from "../../../../UI_library";
 
 const schema = yup
   .object({
-    firstname: yup.string().required("firstname is required"),
-    lastname: yup.string().required("lastname is required"),
+    email: yup
+      .string()
+      .email("Email is invalid")
+      .required("Email is required"),
+    firstname: yup.string().required("Firstname is required"),
+    lastname: yup.string().required("Lastname is required"),
   })
   .required();
 
-const DoctorForm = ({ data }) => {
+const DoctorForm = ({ doctor }) => {
   const [addDoctor] = useAddDoctorMutation();
-  console.log(data);
+  const [updateDoctor] = useUpdateDoctorMutation();
+
+  const isAddMode = !doctor;
+
   const {
     control,
     handleSubmit,
@@ -34,17 +44,19 @@ const DoctorForm = ({ data }) => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {
-      email: data?.email || "",
-      bio: data?.bio || "",
-      gender: { value: data?.gender || "", label: data?.gender || "" },
-      position: {
-        value: data?.position || "",
-        label: data?.position || "",
-      },
-      firstname: data?.firstname || "",
-      lastname: data?.lastname || "",
-    },
+    defaultValues: doctor
+      ? {
+          email: doctor?.email,
+          bio: doctor.bio,
+          gender: { value: doctor.gender, label: doctor.gender },
+          position: {
+            value: doctor.position,
+            label: doctor.position,
+          },
+          firstname: doctor.firstname,
+          lastname: doctor.lastname,
+        }
+      : "",
   });
   const navigate = useNavigate();
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -56,43 +68,43 @@ const DoctorForm = ({ data }) => {
 
   const onSubmit = async (values) => {
     const { gender, position } = values;
-
     const formData = new FormData();
     formData.append("gender", gender?.value);
     formData.append("position", position?.value);
-    // console.log(selectedFile);
     if (selectedFiles) {
       formData.append("img_path", selectedFiles[0]);
     }
-
     Object.keys(values).forEach((key) => {
       if (key !== "gender" && key !== "position") {
         formData.append(key, values[key]);
+        console.log(values, "vvv");
       }
     });
 
-    try {
-      const res = await addDoctor(formData);
-      navigate("/doctors");
-    } catch (err) {
-      console.log(err);
+    if (isAddMode) {
+      await addDoctor(formData);
+    } else {
+      const doctorId = doctor._id;
+    const res = await updateDoctor({ doctorId, data: formData });
     }
+    navigate("/doctors");
   };
   useEffect(() => {
-    if (data) {
+    if (doctor) {
+      const { email, bio, gender, position, firstname, lastname } = doctor;
       reset({
-        email: data.email,
-        bio: data.bio,
-        gender: { value: data.gender, label: data.gender },
+        email,
+        bio,
+        gender: { value: gender, label: gender },
         position: {
-          value: data.position,
-          label: data.position,
+          value: position,
+          label: position,
         },
-        firstname: data.firstname,
-        lastname: data.lastname,
+        firstname,
+        lastname,
       });
     }
-  }, [data, reset]);
+  }, [doctor]);
   return (
     <Box className="doctorForm-box">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -142,6 +154,12 @@ const DoctorForm = ({ data }) => {
                 <TextField placeholder="Email" {...field} />
               )}
             />
+            <Typography
+              variant="span"
+              sx={{ color: "red", fontSize: "10px" }}
+            >
+              {errors?.email?.message}
+            </Typography>
           </Grid>
           {/* <Grid item md={6}>
             <FormLabel>Phone No.</FormLabel>
@@ -214,7 +232,7 @@ const DoctorForm = ({ data }) => {
           variant="contained"
           color="primary"
         >
-          Save
+          {isAddMode ? "Add User" : "Edit User"}
         </Button>
       </form>
     </Box>

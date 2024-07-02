@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useMemo } from "react";
 import DoctorForm from "../add-doctor/components/DoctorForm";
 import { useGetDoctorByIdQuery } from "../../../services/Doctor.service";
 import { useLocation, useParams } from "react-router-dom";
 
 const EditDoctorPage = () => {
   const { id } = useParams();
-  const { data: doctor } = useGetDoctorByIdQuery(id);
+  const skip = !id; // Skip the query if `id` is not provided
 
-  console.log(doctor);
+  const { data, isFetching, error } = useGetDoctorByIdQuery(id, {
+    skip,
+  });
+
   return (
     <div>
-      <DoctorForm data={doctor} />
+      <DoctorForm doctor={data} />
     </div>
   );
 };
