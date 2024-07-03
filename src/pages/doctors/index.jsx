@@ -48,7 +48,7 @@ const Doctors = () => {
                 border: "1px solid gray",
               }}
               component="img"
-              src={`http://localhost:8080/${params.row.img_path}`}
+              src={`http://localhost:8000/${params.row.img_path}`}
             />
             {params.row.firstname} {params.row.lastname}
           </>

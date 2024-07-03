@@ -19,6 +19,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { singleDropzoneOptions } from "../../../../utils/constants";
 import { FileUpload } from "../../../../UI_library";
+import { LoadingOpacity } from "../../../../UI_library/Molecules/loader";
 
 const schema = yup
   .object({
@@ -27,11 +28,19 @@ const schema = yup
       .email("Email is invalid")
       .required("Email is required"),
     firstname: yup.string().required("Firstname is required"),
+    position: yup.object().shape({
+      label: yup.string().required("Position is required"),
+      value: yup.string().required("Position is required"),
+    }),
+    gender: yup.object().shape({
+      label: yup.string().required("Gender is required"),
+      value: yup.string().required("Gender is required"),
+    }),
     lastname: yup.string().required("Lastname is required"),
   })
   .required();
 
-const DoctorForm = ({ doctor }) => {
+const DoctorForm = ({ loading, doctor }) => {
   const [addDoctor] = useAddDoctorMutation();
   const [updateDoctor] = useUpdateDoctorMutation();
 
@@ -46,15 +55,18 @@ const DoctorForm = ({ doctor }) => {
     resolver: yupResolver(schema),
     defaultValues: doctor
       ? {
-          email: doctor?.email,
-          bio: doctor.bio,
-          gender: { value: doctor.gender, label: doctor.gender },
+          email: doctor?.email || "",
+          bio: doctor.bio || "",
+          gender: {
+            value: doctor.gender || "",
+            label: doctor.gender || "",
+          },
           position: {
-            value: doctor.position,
+            value: doctor.position || "",
             label: doctor.position,
           },
-          firstname: doctor.firstname,
-          lastname: doctor.lastname,
+          firstname: doctor.firstname || "",
+          lastname: doctor.lastname || "",
         }
       : "",
   });
@@ -85,7 +97,7 @@ const DoctorForm = ({ doctor }) => {
       await addDoctor(formData);
     } else {
       const doctorId = doctor._id;
-    const res = await updateDoctor({ doctorId, data: formData });
+      const res = await updateDoctor({ doctorId, data: formData });
     }
     navigate("/doctors");
   };
@@ -106,136 +118,144 @@ const DoctorForm = ({ doctor }) => {
     }
   }, [doctor]);
   return (
-    <Box className="doctorForm-box">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid spacing={3} container>
-          <Grid item md={6}>
-            <FormLabel>First Name</FormLabel>
-            <Controller
-              rules={{ required: true }}
-              style={{ width: "100%" }}
-              control={control}
-              name="firstname"
-              render={({ field }) => (
-                <TextField placeholder="First Name:" {...field} />
-              )}
-            />
-            <Typography
-              variant="span"
-              sx={{ color: "red", fontSize: "10px" }}
-            >
-              {errors?.firstname?.message}
-            </Typography>
-          </Grid>
+    <LoadingOpacity loading={loading}>
+      <Box className="doctorForm-box">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Grid spacing={3} container>
+            <Grid item md={6}>
+              <FormLabel>First Name</FormLabel>
+              <Controller
+                rules={{ required: true }}
+                style={{ width: "100%" }}
+                control={control}
+                name="firstname"
+                render={({ field }) => (
+                  <TextField placeholder="First Name:" {...field} />
+                )}
+              />
+              <Typography
+                variant="span"
+                sx={{ color: "red", fontSize: "10px" }}
+              >
+                {errors?.firstname?.message}
+              </Typography>
+            </Grid>
 
-          <Grid item md={6}>
-            <FormLabel>Last Name</FormLabel>
-            <Controller
-              rules={{ required: true }}
-              control={control}
-              name="lastname"
-              render={({ field }) => (
-                <TextField placeholder="Last Name" {...field} />
-              )}
-            />
-            <Typography
-              variant="span"
-              sx={{ color: "red", fontSize: "10px" }}
-            >
-              {errors?.lastname?.message}
-            </Typography>
+            <Grid item md={6}>
+              <FormLabel>Last Name</FormLabel>
+              <Controller
+                rules={{ required: true }}
+                control={control}
+                name="lastname"
+                render={({ field }) => (
+                  <TextField placeholder="Last Name" {...field} />
+                )}
+              />
+              <Typography
+                variant="span"
+                sx={{ color: "red", fontSize: "10px" }}
+              >
+                {errors?.lastname?.message}
+              </Typography>
+            </Grid>
+            <Grid item md={12}>
+              <FormLabel>Email</FormLabel>
+              <Controller
+                control={control}
+                name="email"
+                render={({ field }) => (
+                  <TextField placeholder="Email" {...field} />
+                )}
+              />
+              <Typography
+                variant="span"
+                sx={{ color: "red", fontSize: "10px" }}
+              >
+                {errors?.email?.message}
+              </Typography>
+            </Grid>
+
+            <Grid item md={6}>
+              <FormLabel>Departments</FormLabel>
+              <Controller
+                control={control}
+                name="position"
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    {...field}
+                    options={[
+                      { value: "eye", label: "Eye Doctor" },
+                      { value: "orthopedic", label: "Orthopedic" },
+                      { value: "psychotherapy", label: "Psychotherapy" },
+                    ]}
+                  />
+                )}
+              />
+              <Typography
+                variant="span"
+                sx={{ color: "red", fontSize: "10px" }}
+              >
+                {errors?.position?.message ||
+                  errors?.position?.label.message}
+              </Typography>
+            </Grid>
+            <Grid item md={6}>
+              <FormLabel>Gender</FormLabel>
+              <Controller
+                control={control}
+                name="gender"
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    options={[
+                      { value: "male", label: "Male" },
+                      { value: "female", label: "Female" },
+                    ]}
+                  />
+                )}
+              />
+              <Typography
+                variant="span"
+                sx={{ color: "red", fontSize: "10px" }}
+              >
+                {errors?.gender?.message || errors?.gender?.label.message}
+              </Typography>
+            </Grid>
+            <Grid item md={12}>
+              <FormLabel>Bio</FormLabel>
+              <Controller
+                control={control}
+                name="bio"
+                render={({ field }) => (
+                  <textarea
+                    {...field}
+                    className="customTextarea"
+                    rows={5}
+                    name="Size"
+                    placeholder="Large"
+                  />
+                )}
+              />
+            </Grid>
           </Grid>
-          <Grid item md={12}>
-            <FormLabel>Email</FormLabel>
-            <Controller
-              control={control}
-              name="email"
-              render={({ field }) => (
-                <TextField placeholder="Email" {...field} />
-              )}
+          <Box>
+            <FileUpload
+              options={singleDropzoneOptions}
+              setSelectedFiles={setSelectedFiles}
             />
-            <Typography
-              variant="span"
-              sx={{ color: "red", fontSize: "10px" }}
-            >
-              {errors?.email?.message}
-            </Typography>
-          </Grid>
-          {/* <Grid item md={6}>
-            <FormLabel>Phone No.</FormLabel>
-            <Controller
-              control={control}
-              name="phoneNumber"
-              render={({ field }) => (
-                <TextField placeholder="Phone no.:" {...field} />
-              )}
-            />
-          </Grid> */}
-          <Grid item md={6}>
-            <FormLabel>Departments</FormLabel>
-            <Controller
-              control={control}
-              name="position"
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={[
-                    { value: "eye", label: "Eye Doctor" },
-                    { value: "orthopedic", label: "Orthopedic" },
-                    { value: "psychotherapy", label: "Psychotherapy" },
-                  ]}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item md={6}>
-            <FormLabel>Gender</FormLabel>
-            <Controller
-              control={control}
-              name="gender"
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  options={[
-                    { value: "male", label: "Male" },
-                    { value: "female", label: "Female" },
-                  ]}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item md={12}>
-            <FormLabel>Bio</FormLabel>
-            <Controller
-              control={control}
-              name="bio"
-              render={({ field }) => (
-                <textarea
-                  className="customTextarea"
-                  rows={5}
-                  name="Size"
-                  placeholder="Large"
-                />
-              )}
-            />
-          </Grid>
-        </Grid>
-        <Box>
-          <FileUpload
-            options={singleDropzoneOptions}
-            setSelectedFiles={setSelectedFiles}
-          />
-        </Box>
-        <Button
-          type="submit"
-          sx={{ marginTop: "20px" }}
-          variant="contained"
-          color="primary"
-        >
-          {isAddMode ? "Add User" : "Edit User"}
-        </Button>
-      </form>
-    </Box>
+          </Box>
+          <Button
+            type="submit"
+            sx={{ marginTop: "20px" }}
+            variant="contained"
+            color="primary"
+          >
+            {isAddMode ? "Add User" : "Edit User"}
+          </Button>
+        </form>
+      </Box>
+    </LoadingOpacity>
   );
 };
 

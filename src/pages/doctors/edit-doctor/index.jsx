@@ -7,13 +7,13 @@ const EditDoctorPage = () => {
   const { id } = useParams();
   const skip = !id; // Skip the query if `id` is not provided
 
-  const { data, isFetching, error } = useGetDoctorByIdQuery(id, {
+  const { data, isLoading, error } = useGetDoctorByIdQuery(id, {
     skip,
   });
 
   return (
     <div>
-      <DoctorForm doctor={data} />
+      <DoctorForm loading={isLoading} doctor={data} />
     </div>
   );
 };

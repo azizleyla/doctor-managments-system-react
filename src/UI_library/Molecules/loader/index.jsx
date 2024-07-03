@@ -1,4 +1,4 @@
-import CircleLoader from "./CircleLoader";
+import LoadingOpacity from "./LoadingOpacity";
 import LinearLoader from "./LinearLoader";
 
-export { CircleLoader, LinearLoader };
+export { LoadingOpacity, LinearLoader };
