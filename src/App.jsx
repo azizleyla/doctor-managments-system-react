@@ -15,52 +15,54 @@ const PatientsPage = lazy(() => import("./pages/patients"));
 
 function App() {
   return (
-    <Routes>
-      <Route
-        path="/auth"
-        element={
-          <ProtectedRoute isAuthPage>
-            <Outlet />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="signup" element={<SignUpPage />} />
-        <Route path="login" element={<LoginPage />} />
-      </Route>
-
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <Layout />
-          </ProtectedRoute>
-        }
-      >
+    <Suspense fallback="Loading..">
+      <Routes>
         <Route
-          path="doctors"
-          element={<DynamicImport component={DoctorsPage} />}
-        />
+          path="/auth"
+          element={
+            <ProtectedRoute isAuthPage>
+              <Outlet />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="signup" element={<SignUpPage />} />
+          <Route path="login" element={<LoginPage />} />
+        </Route>
 
         <Route
-          path="profile"
-          element={<DynamicImport component={ProfilePage} />}
-        />
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
+          <Route
+            path="doctors"
+            element={<DynamicImport component={DoctorsPage} />}
+          />
 
-        <Route
-          path="doctors/add-doctor"
-          element={<DynamicImport component={AddDoctorPage} />}
-        />
-        <Route
-          path="doctors/edit/:id"
-          element={<DynamicImport component={EditDoctorPage} />}
-        />
-        <Route
-          path="patients"
-          element={<DynamicImport component={PatientsPage} />}
-        />
-      </Route>
-      <Route path="*" element={<p>There's nothing here: 404!</p>} />
-    </Routes>
+          <Route
+            path="profile"
+            element={<DynamicImport component={ProfilePage} />}
+          />
+
+          <Route
+            path="doctors/add-doctor"
+            element={<DynamicImport component={AddDoctorPage} />}
+          />
+          <Route
+            path="doctors/edit/:id"
+            element={<DynamicImport component={EditDoctorPage} />}
+          />
+          <Route
+            path="patients"
+            element={<DynamicImport component={PatientsPage} />}
+          />
+        </Route>
+        <Route path="*" element={<p>There's nothing here: 404!</p>} />
+      </Routes>
+    </Suspense>
   );
 }
 

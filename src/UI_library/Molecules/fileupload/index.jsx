@@ -15,12 +15,16 @@ import {
 import React, { useRef, useState } from "react";
 import "./style.scss";
 
-const FileUpload = ({ setSelectedFiles, options }) => {
+const FileUpload = ({
+  doctor,
+  selectedFiles,
+  handleChangeSelectedFile,
+  options,
+}) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
   const { uploadLimit, title, allowed, description, maxFileSize } =
     options;
-  const [files, setFiles] = useState([]);
   const fileInputRef = useRef(null);
 
   const [selectedImg, setSelectedImg] = useState(null);
@@ -28,8 +32,7 @@ const FileUpload = ({ setSelectedFiles, options }) => {
   const convertToKb = (sizeInBytes) => sizeInBytes / 1024;
 
   const addFiles = (droppedFiles) => {
-    let filesLength = files.length;
-    console.log(files);
+    let filesLength = selectedFiles.length;
 
     for (let fileIndex = 0; fileIndex < droppedFiles.length; fileIndex++) {
       const isAllowedFileType = allowed.includes(
@@ -49,9 +52,10 @@ const FileUpload = ({ setSelectedFiles, options }) => {
         setErrors((prevErrors) => [...prevErrors, "Max file size"]);
       }
       if (filesLength < uploadLimit && isAllowedFileType) {
-        console.log(files);
-
-        setFiles((prevFiles) => [...prevFiles, droppedFiles[fileIndex]]);
+        handleChangeSelectedFile((prevFiles) => [
+          ...prevFiles,
+          droppedFiles[fileIndex],
+        ]);
         filesLength++;
       } else {
         setErrors((prevErrors) => [
@@ -87,15 +91,12 @@ const FileUpload = ({ setSelectedFiles, options }) => {
   };
 
   const handleUpload = () => {
-    if (files) {
+    if (selectedFiles) {
       setLoading(true);
-      setSelectedFiles(files).then(() => {
+      handleChangeSelectedFile(selectedFiles);
+      setTimeout(() => {
         setLoading(false);
-      });
-
-      // getFilesBack(files).finally(() => {
-      //   setLoading(false);
-      // });
+      }, 2000); // Adjust the timeout as needed
     }
   };
 
@@ -136,7 +137,7 @@ const FileUpload = ({ setSelectedFiles, options }) => {
       </label>
 
       <List className="files">
-        {files.map((file, fileIndex) => {
+        {selectedFiles.map((file, fileIndex) => {
           const progress = 25;
           return (
             <ListItem disablePadding key={fileIndex}>
@@ -152,7 +153,11 @@ const FileUpload = ({ setSelectedFiles, options }) => {
               >
                 <ListItemAvatar>
                   <Avatar
-                    src={URL.createObjectURL(file)}
+                    src={
+                      file
+                        ? URL.createObjectURL(file)
+                        : URL.createObjectURL(doctor.img_path)
+                    }
                     variant="square"
                   />
                 </ListItemAvatar>
@@ -163,11 +168,12 @@ const FileUpload = ({ setSelectedFiles, options }) => {
                   valueBuffer={progress}
                 />
               </ListItemButton>
+              {console.log(file)}
               <Button
                 title="Siyahıdan çıxar"
                 onClick={(e) => {
                   e.preventDefault();
-                  setFiles((prevData) =>
+                  setSelectedFiles((prevData) =>
                     prevData.filter(
                       (item, clickedIndex) => clickedIndex !== fileIndex,
                     ),
@@ -189,7 +195,7 @@ const FileUpload = ({ setSelectedFiles, options }) => {
           icon={<span className="fas fa-arrow-up-from-bracket" />}
           sx={{ marginTop: "1rem" }}
           onClick={handleUpload}
-          disabled={files.length !== uploadLimit || loading}
+          disabled={selectedFiles.length !== uploadLimit || loading}
         >
           {loading ? "Gözləyin..." : "Yüklə"}
         </Button>

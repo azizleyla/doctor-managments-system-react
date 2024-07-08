@@ -21,3 +21,8 @@ export function isTokenExpired(token) {
     }
 }
 
+
+export const loggedIn = () => {
+    const token = Cookies.get("token");
+    return token;
+};

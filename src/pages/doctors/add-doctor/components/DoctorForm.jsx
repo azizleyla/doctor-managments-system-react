@@ -80,14 +80,17 @@ const DoctorForm = ({ loading, doctor }) => {
 
   const onSubmit = async (values) => {
     const { gender, position } = values;
+    console.log(values);
     const formData = new FormData();
     formData.append("gender", gender?.value);
     formData.append("position", position?.value);
+    formData.append("bio", values.bio ?? "");
+    formData.append("phone", 555);
     if (selectedFiles) {
       formData.append("img_path", selectedFiles[0]);
     }
     Object.keys(values).forEach((key) => {
-      if (key !== "gender" && key !== "position") {
+      if (key !== "gender" && key !== "position" && key !== "bio") {
         formData.append(key, values[key]);
         console.log(values, "vvv");
       }
@@ -241,8 +244,10 @@ const DoctorForm = ({ loading, doctor }) => {
           </Grid>
           <Box>
             <FileUpload
+              selectedFiles={selectedFiles}
+              doctor={doctor}
               options={singleDropzoneOptions}
-              setSelectedFiles={setSelectedFiles}
+              handleChangeSelectedFile={setSelectedFiles}
             />
           </Box>
           <Button

@@ -13,13 +13,14 @@ import React, { useContext, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { SidebarContext } from "../../layout";
 import { useAuth } from "../../../hooks/useAuth";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Topbar = () => {
   const { isOpenSidebar, handleToggle } = useContext(SidebarContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const { logout, user } = useAuth();
+  const { logout, userInfo } = useAuth();
+  const navigate = useNavigate();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -98,7 +99,9 @@ const Topbar = () => {
             minWidth: 0,
           }}
         >
-          {user?.username && <Avatar {...stringAvatar(user?.username)} />}
+          {userInfo?.username && (
+            <Avatar {...stringAvatar(userInfo?.username)} />
+          )}
         </Button>
         <Menu
           disableScrollLock={true}
@@ -128,10 +131,10 @@ const Topbar = () => {
             gap={1}
             alignItems="center"
           >
-            {user?.photo ? (
+            {userInfo?.photo ? (
               <Avatar sx={{ boxShadow: "0 0 3px #3c485826" }} />
             ) : (
-              <Avatar {...stringAvatar(user?.username)} />
+              <Avatar {...stringAvatar(userInfo?.username)} />
             )}
 
             <Stack>
@@ -141,7 +144,7 @@ const Topbar = () => {
                 sx={{ fontSize: "13px" }}
                 variant="p"
               >
-                {user?.username}
+                {userInfo?.username}
               </Typography>
               <Typography
                 variant="span"
@@ -151,12 +154,17 @@ const Topbar = () => {
                   color: "#8492a6",
                 }}
               >
-                {user?.role}
+                {userInfo?.role}
               </Typography>
             </Stack>
           </Box>
-          <MenuItem onClick={handleClose}>
-            <Link to="/profile"> My Profile</Link>
+          <MenuItem
+            onClick={() => {
+              handleClose();
+              navigate("/profile");
+            }}
+          >
+            My Profile
           </MenuItem>
           <MenuItem onClick={handleLogOut}>Logout</MenuItem>
         </Menu>

@@ -50,7 +50,12 @@ const Doctors = () => {
               component="img"
               src={`http://localhost:8000/${params.row.img_path}`}
             />
-            {params.row.firstname} {params.row.lastname}
+            <Typography
+              component="span"
+              sx={{ textTransform: "capitalize" }}
+            >
+              {params.row.firstname} {params.row.lastname}
+            </Typography>{" "}
           </>
         );
       },

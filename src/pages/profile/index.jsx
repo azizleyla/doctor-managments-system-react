@@ -13,7 +13,7 @@ import { useAuth } from "../../hooks/useAuth";
 import moment from "moment/moment";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { userInfo } = useAuth();
 
   return (
     <Box
@@ -45,7 +45,7 @@ const Profile = () => {
             component="h3"
             textTransform="capitalize"
           >
-            {user?.username} ({user?.role})
+            {userInfo?.username} ({userInfo?.role})
           </Typography>
         </Grid>
         <Grid item lg={8}>
@@ -66,7 +66,7 @@ const Profile = () => {
                   }}
                   variant="p"
                 >
-                  {user?.username}
+                  {userInfo?.username}
                 </Typography>
               </ListItemText>
             </ListItem>
@@ -86,7 +86,7 @@ const Profile = () => {
                   }}
                   variant="p"
                 >
-                  {user?.email}
+                  {userInfo?.email}
                 </Typography>
               </ListItemText>{" "}
             </ListItem>
@@ -106,7 +106,7 @@ const Profile = () => {
                   }}
                   variant="p"
                 >
-                  {user?.role}
+                  {userInfo?.role}
                 </Typography>
               </ListItemText>{" "}
             </ListItem>
@@ -126,7 +126,7 @@ const Profile = () => {
                   }}
                   variant="p"
                 >
-                  {moment(user?.createdAt).format("LL")}
+                  {moment(userInfo?.createdAt).format("LL")}
                 </Typography>
               </ListItemText>{" "}
             </ListItem>
