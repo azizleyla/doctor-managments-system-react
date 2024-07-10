@@ -1,8 +1,11 @@
 import {
   Box,
   Button,
+  FormHelperText,
   FormLabel,
   Grid,
+  InputAdornment,
+  OutlinedInput,
   TextField,
   Typography,
 } from "@mui/material";
@@ -20,7 +23,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { singleDropzoneOptions } from "../../../../utils/constants";
 import { FileUpload } from "../../../../UI_library";
 import { LoadingOpacity } from "../../../../UI_library/Molecules/loader";
+import InstagramIcon from "@mui/icons-material/Instagram";
 
+import FacebookIcon from "@mui/icons-material/Facebook";
+import { CheckBox } from "@mui/icons-material";
 const schema = yup
   .object({
     email: yup
@@ -50,9 +56,11 @@ const DoctorForm = ({ loading, doctor }) => {
     control,
     handleSubmit,
     reset,
+    trigger: triggerDoctorForm,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    mode: "all",
     defaultValues: doctor
       ? {
           email: doctor?.email || "",
@@ -61,6 +69,8 @@ const DoctorForm = ({ loading, doctor }) => {
             value: doctor.gender || "",
             label: doctor.gender || "",
           },
+          insta_link: "",
+          fb_link: "",
           position: {
             value: doctor.position || "",
             label: doctor.position,
@@ -79,18 +89,31 @@ const DoctorForm = ({ loading, doctor }) => {
   // };
 
   const onSubmit = async (values) => {
-    const { gender, position } = values;
+    const { gender, position, insta_link, fb_link } = values;
     console.log(values);
     const formData = new FormData();
     formData.append("gender", gender?.value);
     formData.append("position", position?.value);
     formData.append("bio", values.bio ?? "");
-    formData.append("phone", 555);
+    formData.append("phone", "555");
+    let socialLink = {
+      insta_link,
+      fb_link,
+    };
+    console.log(socialLink);
+    formData.append("social_media", JSON.stringify(socialLink));
     if (selectedFiles) {
       formData.append("img_path", selectedFiles[0]);
     }
     Object.keys(values).forEach((key) => {
-      if (key !== "gender" && key !== "position" && key !== "bio") {
+      if (
+        key !== "gender" &&
+        key !== "position" &&
+        key !== "bio" &&
+        key !== "phone" &&
+        key !== "insta_link" &&
+        key !== "fb_link"
+      ) {
         formData.append(key, values[key]);
         console.log(values, "vvv");
       }
@@ -106,10 +129,20 @@ const DoctorForm = ({ loading, doctor }) => {
   };
   useEffect(() => {
     if (doctor) {
-      const { email, bio, gender, position, firstname, lastname } = doctor;
+      const {
+        email,
+        bio,
+        gender,
+        social_media: { insta_link, fb_link },
+        position,
+        firstname,
+        lastname,
+      } = doctor;
       reset({
         email,
         bio,
+        fb_link,
+        insta_link,
         gender: { value: gender, label: gender },
         position: {
           value: position,
@@ -119,7 +152,23 @@ const DoctorForm = ({ loading, doctor }) => {
         lastname,
       });
     }
+    console.log(doctor);
   }, [doctor]);
+
+  let maskProps = {
+    mask: "(\\994)00-000-00-00",
+    definitions: {
+      "#": /[0]/,
+    },
+    placeholderChar: "_",
+  };
+  useEffect(() => {
+    triggerDoctorForm();
+    return () => {
+      reset();
+    };
+  }, [triggerDoctorForm, reset]);
+
   return (
     <LoadingOpacity loading={loading}>
       <Box className="doctorForm-box">
@@ -136,12 +185,12 @@ const DoctorForm = ({ loading, doctor }) => {
                   <TextField placeholder="First Name:" {...field} />
                 )}
               />
-              <Typography
+              <FormHelperText
                 variant="span"
                 sx={{ color: "red", fontSize: "10px" }}
               >
                 {errors?.firstname?.message}
-              </Typography>
+              </FormHelperText>
             </Grid>
 
             <Grid item md={6}>
@@ -154,14 +203,14 @@ const DoctorForm = ({ loading, doctor }) => {
                   <TextField placeholder="Last Name" {...field} />
                 )}
               />
-              <Typography
+              <FormHelperText
                 variant="span"
                 sx={{ color: "red", fontSize: "10px" }}
               >
                 {errors?.lastname?.message}
-              </Typography>
+              </FormHelperText>
             </Grid>
-            <Grid item md={12}>
+            <Grid item md={6}>
               <FormLabel>Email</FormLabel>
               <Controller
                 control={control}
@@ -176,6 +225,64 @@ const DoctorForm = ({ loading, doctor }) => {
               >
                 {errors?.email?.message}
               </Typography>
+            </Grid>
+
+            <Grid item md={6}>
+              <FormLabel>Phone Number</FormLabel>
+              <Controller
+                control={control}
+                name="phone"
+                render={({ field }) => (
+                  <OutlinedInput type="text" inputProps={{ maskProps }} />
+                )}
+              />
+              <FormHelperText
+                variant="span"
+                sx={{ color: "red", fontSize: "10px" }}
+              >
+                {errors?.phone?.message}
+              </FormHelperText>
+            </Grid>
+
+            <Grid item md={6}>
+              <FormLabel>Facebook</FormLabel>
+              <Controller
+                control={control}
+                name="fb_link"
+                render={({ field }) => (
+                  <TextField
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <FacebookIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                    placeholder="Username"
+                    {...field}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item md={6}>
+              <FormLabel>Instagram</FormLabel>
+              <Controller
+                control={control}
+                name="insta_link"
+                render={({ field }) => (
+                  <TextField
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <InstagramIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                    placeholder="Username"
+                    {...field}
+                  />
+                )}
+              />
             </Grid>
 
             <Grid item md={6}>
@@ -195,13 +302,13 @@ const DoctorForm = ({ loading, doctor }) => {
                   />
                 )}
               />
-              <Typography
+              <FormHelperText
                 variant="span"
                 sx={{ color: "red", fontSize: "10px" }}
               >
                 {errors?.position?.message ||
                   errors?.position?.label.message}
-              </Typography>
+              </FormHelperText>
             </Grid>
             <Grid item md={6}>
               <FormLabel>Gender</FormLabel>
@@ -218,12 +325,12 @@ const DoctorForm = ({ loading, doctor }) => {
                   />
                 )}
               />
-              <Typography
+              <FormHelperText
                 variant="span"
                 sx={{ color: "red", fontSize: "10px" }}
               >
                 {errors?.gender?.message || errors?.gender?.label.message}
-              </Typography>
+              </FormHelperText>
             </Grid>
             <Grid item md={12}>
               <FormLabel>Bio</FormLabel>
