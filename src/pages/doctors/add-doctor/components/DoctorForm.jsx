@@ -27,6 +27,10 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 
 import FacebookIcon from "@mui/icons-material/Facebook";
 import { CheckBox } from "@mui/icons-material";
+import WorkSchedule from "./WorkSchedule";
+import { TextMaskCustom } from "./TextMaskCustom";
+import { scheduleObj } from "./scheduleObj";
+
 const schema = yup
   .object({
     email: yup
@@ -42,6 +46,10 @@ const schema = yup
       label: yup.string().required("Gender is required"),
       value: yup.string().required("Gender is required"),
     }),
+    phone: yup
+      .string()
+      .required("Phone is required")
+      .min(15, "Telefonu düzgün daxil edin"),
     lastname: yup.string().required("Lastname is required"),
   })
   .required();
@@ -49,7 +57,6 @@ const schema = yup
 const DoctorForm = ({ loading, doctor }) => {
   const [addDoctor] = useAddDoctorMutation();
   const [updateDoctor] = useUpdateDoctorMutation();
-
   const isAddMode = !doctor;
 
   const {
@@ -89,60 +96,63 @@ const DoctorForm = ({ loading, doctor }) => {
   // };
 
   const onSubmit = async (values) => {
-    const { gender, position, insta_link, fb_link } = values;
     console.log(values);
-    const formData = new FormData();
-    formData.append("gender", gender?.value);
-    formData.append("position", position?.value);
-    formData.append("bio", values.bio ?? "");
-    formData.append("phone", "555");
-    let socialLink = {
-      insta_link,
-      fb_link,
-    };
-    console.log(socialLink);
-    formData.append("social_media", JSON.stringify(socialLink));
-    if (selectedFiles) {
-      formData.append("img_path", selectedFiles[0]);
-    }
-    Object.keys(values).forEach((key) => {
-      if (
-        key !== "gender" &&
-        key !== "position" &&
-        key !== "bio" &&
-        key !== "phone" &&
-        key !== "insta_link" &&
-        key !== "fb_link"
-      ) {
-        formData.append(key, values[key]);
-        console.log(values, "vvv");
-      }
-    });
 
-    if (isAddMode) {
-      await addDoctor(formData);
-    } else {
-      const doctorId = doctor._id;
-      const res = await updateDoctor({ doctorId, data: formData });
+    try {
+      const { gender, position, insta_link, fb_link } = values;
+      const formData = new FormData();
+      formData.append("gender", gender?.value);
+      formData.append("position", position?.value);
+      let socialLink = {
+        insta_link,
+        fb_link,
+      };
+      formData.append("social_media", JSON.stringify(socialLink));
+      if (selectedFiles) {
+        formData.append("img_path", selectedFiles[0]);
+      }
+      Object.keys(values).forEach((key) => {
+        if (
+          key !== "gender" &&
+          key !== "position" &&
+          key !== "insta_link" &&
+          key !== "fb_link"
+        ) {
+          formData.append(key, values[key]);
+        }
+      });
+
+      if (isAddMode) {
+        await addDoctor(formData);
+      } else {
+        const doctorId = doctor._id;
+        await updateDoctor({ doctorId, data: formData });
+      }
+      navigate("/doctors");
+    } catch (error) {
+      console.error("Error occurred while submitting the form:", error);
     }
-    navigate("/doctors");
   };
+
   useEffect(() => {
     if (doctor) {
       const {
         email,
         bio,
         gender,
-        social_media: { insta_link, fb_link },
+        social_media, // Assuming social_media is an object containing fb_link and insta_link
         position,
         firstname,
         lastname,
+        phone,
       } = doctor;
+      const { fb_link, insta_link } = social_media || {};
       reset({
         email,
         bio,
         fb_link,
         insta_link,
+        phone,
         gender: { value: gender, label: gender },
         position: {
           value: position,
@@ -169,6 +179,19 @@ const DoctorForm = ({ loading, doctor }) => {
     };
   }, [triggerDoctorForm, reset]);
 
+  const [workingDays, setWorkingDays] = useState([
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ]);
+
+  const [workingHours, setWorkingHours] = useState([]);
+  useEffect(() => {
+    setWorkingHours(scheduleObj);
+  }, []);
   return (
     <LoadingOpacity loading={loading}>
       <Box className="doctorForm-box">
@@ -233,7 +256,13 @@ const DoctorForm = ({ loading, doctor }) => {
                 control={control}
                 name="phone"
                 render={({ field }) => (
-                  <OutlinedInput type="text" inputProps={{ maskProps }} />
+                  <OutlinedInput
+                    {...field}
+                    fullWidth
+                    inputComponent={TextMaskCustom}
+                    type="text"
+                    inputProps={{ maskProps }}
+                  />
                 )}
               />
               <FormHelperText
@@ -349,6 +378,17 @@ const DoctorForm = ({ loading, doctor }) => {
               />
             </Grid>
           </Grid>
+          <Box my={2}>
+            <Typography component="span">Working hours</Typography>
+            <WorkSchedule
+              control={control}
+              schedule={workingHours}
+              workingDays={workingDays}
+              reset={reset}
+              setWorkingDays={setWorkingDays}
+            />
+          </Box>
+
           <Box>
             <FileUpload
               selectedFiles={selectedFiles}

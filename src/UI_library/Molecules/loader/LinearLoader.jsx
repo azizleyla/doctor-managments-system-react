@@ -1,6 +1,7 @@
 import { Backdrop, Box, Typography } from "@mui/material";
 import "./style.scss";
 
+
 function LinearLoader({ loading = false, children }) {
   return (
     <>

@@ -11,7 +11,7 @@ const AddDoctorPage = () => {
           Add New Doctor
         </Typography>
         <Grid spacing={2} container mt={4}>
-          <Grid item lg={8}>
+          <Grid item lg={12}>
             <DoctorForm />
           </Grid>
         </Grid>
