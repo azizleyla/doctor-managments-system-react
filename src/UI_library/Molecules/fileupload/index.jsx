@@ -103,6 +103,7 @@ const FileUpload = ({
   return (
     <>
       <input
+        
         className="inputFile"
         onChange={handleFileChange}
         id="file-upload"

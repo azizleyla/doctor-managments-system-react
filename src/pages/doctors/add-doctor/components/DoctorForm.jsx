@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import Select from "react-select";
 import "./style.scss";
 import {
@@ -27,9 +27,9 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 
 import FacebookIcon from "@mui/icons-material/Facebook";
 import { CheckBox } from "@mui/icons-material";
-import WorkSchedule from "./WorkSchedule";
 import { TextMaskCustom } from "./TextMaskCustom";
 import { scheduleObj } from "./scheduleObj";
+import WorkSchedule from "./WorkSchedule";
 
 const schema = yup
   .object({
@@ -59,15 +59,9 @@ const DoctorForm = ({ loading, doctor }) => {
   const [updateDoctor] = useUpdateDoctorMutation();
   const isAddMode = !doctor;
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    trigger: triggerDoctorForm,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
+  const methods = useForm({
     mode: "all",
+    resolver: yupResolver(schema),
     defaultValues: doctor
       ? {
           email: doctor?.email || "",
@@ -76,17 +70,20 @@ const DoctorForm = ({ loading, doctor }) => {
             value: doctor.gender || "",
             label: doctor.gender || "",
           },
+          phone: doctor?.phone || "",
           insta_link: "",
           fb_link: "",
           position: {
             value: doctor.position || "",
             label: doctor.position,
           },
+
           firstname: doctor.firstname || "",
           lastname: doctor.lastname || "",
         }
       : "",
   });
+
   const navigate = useNavigate();
   const [selectedFiles, setSelectedFiles] = useState([]);
 
@@ -94,10 +91,15 @@ const DoctorForm = ({ loading, doctor }) => {
   //   console.log(files);
   //   setSelectedFile(files[0]);
   // };
+  const {
+    trigger: triggerDoctorForm,
+    formState: { isValid, errors, isSubmitSuccessful },
+    handleSubmit,
+    control,
+    reset,
+  } = methods;
 
   const onSubmit = async (values) => {
-    console.log(values);
-
     try {
       const { gender, position, insta_link, fb_link } = values;
       const formData = new FormData();
@@ -173,11 +175,12 @@ const DoctorForm = ({ loading, doctor }) => {
     placeholderChar: "_",
   };
   useEffect(() => {
+    if (isSubmitSuccessful) reset();
+  }, [isSubmitSuccessful, reset]);
+
+  useEffect(() => {
     triggerDoctorForm();
-    return () => {
-      reset();
-    };
-  }, [triggerDoctorForm, reset]);
+  }, [triggerDoctorForm]);
 
   const [workingDays, setWorkingDays] = useState([
     "monday",
@@ -189,206 +192,205 @@ const DoctorForm = ({ loading, doctor }) => {
   ]);
 
   const [workingHours, setWorkingHours] = useState([]);
+
   useEffect(() => {
     setWorkingHours(scheduleObj);
   }, []);
   return (
     <LoadingOpacity loading={loading}>
       <Box className="doctorForm-box">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid spacing={3} container>
-            <Grid item md={6}>
-              <FormLabel>First Name</FormLabel>
-              <Controller
-                rules={{ required: true }}
-                style={{ width: "100%" }}
-                control={control}
-                name="firstname"
-                render={({ field }) => (
-                  <TextField placeholder="First Name:" {...field} />
-                )}
-              />
-              <FormHelperText
-                variant="span"
-                sx={{ color: "red", fontSize: "10px" }}
-              >
-                {errors?.firstname?.message}
-              </FormHelperText>
-            </Grid>
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Grid spacing={3} container>
+              <Grid item md={6}>
+                <FormLabel>First Name</FormLabel>
+                <Controller
+                  rules={{ required: true }}
+                  style={{ width: "100%" }}
+                  control={control}
+                  name="firstname"
+                  render={({ field }) => (
+                    <TextField placeholder="First Name:" {...field} />
+                  )}
+                />
+                <FormHelperText
+                  variant="span"
+                  sx={{ color: "red", fontSize: "10px" }}
+                >
+                  {errors?.firstname?.message}
+                </FormHelperText>
+              </Grid>
 
-            <Grid item md={6}>
-              <FormLabel>Last Name</FormLabel>
-              <Controller
-                rules={{ required: true }}
-                control={control}
-                name="lastname"
-                render={({ field }) => (
-                  <TextField placeholder="Last Name" {...field} />
-                )}
-              />
-              <FormHelperText
-                variant="span"
-                sx={{ color: "red", fontSize: "10px" }}
-              >
-                {errors?.lastname?.message}
-              </FormHelperText>
-            </Grid>
-            <Grid item md={6}>
-              <FormLabel>Email</FormLabel>
-              <Controller
-                control={control}
-                name="email"
-                render={({ field }) => (
-                  <TextField placeholder="Email" {...field} />
-                )}
-              />
-              <Typography
-                variant="span"
-                sx={{ color: "red", fontSize: "10px" }}
-              >
-                {errors?.email?.message}
-              </Typography>
-            </Grid>
+              <Grid item md={6}>
+                <FormLabel>Last Name</FormLabel>
+                <Controller
+                  rules={{ required: true }}
+                  control={control}
+                  name="lastname"
+                  render={({ field }) => (
+                    <TextField placeholder="Last Name" {...field} />
+                  )}
+                />
+                <FormHelperText
+                  variant="span"
+                  sx={{ color: "red", fontSize: "10px" }}
+                >
+                  {errors?.lastname?.message}
+                </FormHelperText>
+              </Grid>
+              <Grid item md={6}>
+                <FormLabel>Email</FormLabel>
+                <Controller
+                  control={control}
+                  name="email"
+                  render={({ field }) => (
+                    <TextField placeholder="Email" {...field} />
+                  )}
+                />
+                <Typography
+                  variant="span"
+                  sx={{ color: "red", fontSize: "10px" }}
+                >
+                  {errors?.email?.message}
+                </Typography>
+              </Grid>
 
-            <Grid item md={6}>
-              <FormLabel>Phone Number</FormLabel>
-              <Controller
-                control={control}
-                name="phone"
-                render={({ field }) => (
-                  <OutlinedInput
-                    {...field}
-                    fullWidth
-                    inputComponent={TextMaskCustom}
-                    type="text"
-                    inputProps={{ maskProps }}
-                  />
-                )}
-              />
-              <FormHelperText
-                variant="span"
-                sx={{ color: "red", fontSize: "10px" }}
-              >
-                {errors?.phone?.message}
-              </FormHelperText>
-            </Grid>
+              <Grid item md={6}>
+                <FormLabel>Phone Number</FormLabel>
+                <Controller
+                  control={control}
+                  name="phone"
+                  render={({ field }) => (
+                    <OutlinedInput
+                      {...field}
+                      fullWidth
+                      inputComponent={TextMaskCustom}
+                      type="text"
+                      inputProps={{ maskProps }}
+                    />
+                  )}
+                />
+                <FormHelperText
+                  variant="span"
+                  sx={{ color: "red", fontSize: "10px" }}
+                >
+                  {errors?.phone?.message}
+                </FormHelperText>
+              </Grid>
 
-            <Grid item md={6}>
-              <FormLabel>Facebook</FormLabel>
-              <Controller
-                control={control}
-                name="fb_link"
-                render={({ field }) => (
-                  <TextField
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <FacebookIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                    placeholder="Username"
-                    {...field}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item md={6}>
-              <FormLabel>Instagram</FormLabel>
-              <Controller
-                control={control}
-                name="insta_link"
-                render={({ field }) => (
-                  <TextField
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <InstagramIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                    placeholder="Username"
-                    {...field}
-                  />
-                )}
-              />
-            </Grid>
+              <Grid item md={6}>
+                <FormLabel>Facebook</FormLabel>
+                <Controller
+                  control={control}
+                  name="fb_link"
+                  render={({ field }) => (
+                    <TextField
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <FacebookIcon />
+                          </InputAdornment>
+                        ),
+                      }}
+                      placeholder="Username"
+                      {...field}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item md={6}>
+                <FormLabel>Instagram</FormLabel>
+                <Controller
+                  control={control}
+                  name="insta_link"
+                  render={({ field }) => (
+                    <TextField
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <InstagramIcon />
+                          </InputAdornment>
+                        ),
+                      }}
+                      placeholder="Username"
+                      {...field}
+                    />
+                  )}
+                />
+              </Grid>
 
-            <Grid item md={6}>
-              <FormLabel>Departments</FormLabel>
-              <Controller
-                control={control}
-                name="position"
-                render={({ field }) => (
-                  <Select
-                    value={field.value}
-                    {...field}
-                    options={[
-                      { value: "eye", label: "Eye Doctor" },
-                      { value: "orthopedic", label: "Orthopedic" },
-                      { value: "psychotherapy", label: "Psychotherapy" },
-                    ]}
-                  />
-                )}
-              />
-              <FormHelperText
-                variant="span"
-                sx={{ color: "red", fontSize: "10px" }}
-              >
-                {errors?.position?.message ||
-                  errors?.position?.label.message}
-              </FormHelperText>
+              <Grid item md={6}>
+                <FormLabel>Departments</FormLabel>
+                <Controller
+                  control={control}
+                  name="position"
+                  render={({ field }) => (
+                    <Select
+                      value={field.value}
+                      {...field}
+                      options={[
+                        { value: "eye", label: "Eye Doctor" },
+                        { value: "orthopedic", label: "Orthopedic" },
+                        { value: "psychotherapy", label: "Psychotherapy" },
+                      ]}
+                    />
+                  )}
+                />
+                <FormHelperText
+                  variant="span"
+                  sx={{ color: "red", fontSize: "10px" }}
+                >
+                  {errors?.position?.message ||
+                    errors?.position?.label.message}
+                </FormHelperText>
+              </Grid>
+              <Grid item md={6}>
+                <FormLabel>Gender</FormLabel>
+                <Controller
+                  control={control}
+                  name="gender"
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={[
+                        { value: "male", label: "Male" },
+                        { value: "female", label: "Female" },
+                      ]}
+                    />
+                  )}
+                />
+                <FormHelperText
+                  variant="span"
+                  sx={{ color: "red", fontSize: "10px" }}
+                >
+                  {errors?.gender?.message ||
+                    errors?.gender?.label.message}
+                </FormHelperText>
+              </Grid>
+              <Grid item md={12}>
+                <FormLabel>Bio</FormLabel>
+                <Controller
+                  control={control}
+                  name="bio"
+                  render={({ field }) => (
+                    <textarea
+                      {...field}
+                      className="customTextarea"
+                      rows={5}
+                      name="Size"
+                      placeholder="Large"
+                    />
+                  )}
+                />
+              </Grid>
             </Grid>
-            <Grid item md={6}>
-              <FormLabel>Gender</FormLabel>
-              <Controller
-                control={control}
-                name="gender"
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    options={[
-                      { value: "male", label: "Male" },
-                      { value: "female", label: "Female" },
-                    ]}
-                  />
-                )}
-              />
-              <FormHelperText
-                variant="span"
-                sx={{ color: "red", fontSize: "10px" }}
-              >
-                {errors?.gender?.message || errors?.gender?.label.message}
-              </FormHelperText>
-            </Grid>
-            <Grid item md={12}>
-              <FormLabel>Bio</FormLabel>
-              <Controller
-                control={control}
-                name="bio"
-                render={({ field }) => (
-                  <textarea
-                    {...field}
-                    className="customTextarea"
-                    rows={5}
-                    name="Size"
-                    placeholder="Large"
-                  />
-                )}
-              />
-            </Grid>
-          </Grid>
-          <Box my={2}>
-            <Typography component="span">Working hours</Typography>
             <WorkSchedule
-              control={control}
+              methods={methods}
               schedule={workingHours}
               workingDays={workingDays}
-              reset={reset}
               setWorkingDays={setWorkingDays}
             />
-          </Box>
-
+            {/* 
           <Box>
             <FileUpload
               selectedFiles={selectedFiles}
@@ -396,16 +398,17 @@ const DoctorForm = ({ loading, doctor }) => {
               options={singleDropzoneOptions}
               handleChangeSelectedFile={setSelectedFiles}
             />
-          </Box>
-          <Button
-            type="submit"
-            sx={{ marginTop: "20px" }}
-            variant="contained"
-            color="primary"
-          >
-            {isAddMode ? "Add User" : "Edit User"}
-          </Button>
-        </form>
+          </Box> */}
+            <Button
+              type="submit"
+              sx={{ marginTop: "20px" }}
+              variant="contained"
+              color="primary"
+            >
+              {isAddMode ? "Add Doctor" : "Edit Doctor"}
+            </Button>
+          </form>
+        </FormProvider>
       </Box>
     </LoadingOpacity>
   );

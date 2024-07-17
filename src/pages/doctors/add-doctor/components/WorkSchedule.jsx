@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import moment from "moment";
-import { Controller } from "react-hook-form";
+import { Controller, useForm, useFormContext } from "react-hook-form";
 import { scheduleObj } from "./scheduleObj";
 
 const daysOfWeek = [
@@ -29,13 +29,15 @@ export default function WorkSchedule({
   schedule,
   workingDays,
   setWorkingDays,
-  reset,
-  control,
+  methods,
 }) {
   const [startTimeForAll, setStartTimeForAll] = React.useState();
   const [endTimeForAll, setEndTimeForAll] = React.useState();
-
   const format = "HH:mm";
+
+  const { reset, control, getValues } = useFormContext({
+    defaultValues: {},
+  });
 
   const addDay = (day) => {
     console.log(addDay);
@@ -59,7 +61,6 @@ export default function WorkSchedule({
     console.log(schedule);
   };
   const setScheduleForm = (schedule) => {
-    console.log("been");
     let scheduleForm = {};
     let workingDays = [];
     if (schedule.MONDAY?.work) {
@@ -101,7 +102,6 @@ export default function WorkSchedule({
     }
 
     // FRIDAY
-
     if (schedule?.FRIDAY?.work) {
       scheduleForm = {
         ...scheduleForm,
@@ -137,84 +137,15 @@ export default function WorkSchedule({
     }
 
     setWorkingDays(workingDays);
-    reset(scheduleForm);
-    console.log(scheduleForm, "sform");
-    console.log(schedule?.SUNDAY?.startTime, format);
+    reset({ ...getValues(), scheduleForm });
   };
   React.useEffect(() => {
     setScheduleForm(schedule);
-    console.log("run");
   }, [schedule]);
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DemoContainer
-        sx={{ marginBottom: "20px" }}
-        components={["TimePicker", "TimePicker"]}
-      >
-        <Grid
-          sx={{ marginBottom: "20px" }}
-          spacing={1}
-          rowGap="5px"
-          container
-        >
-          {daysOfWeek.map((day, index) => {
-            let isWorkingDay = workingDays.includes(day);
-            return (
-              <>
-                <Grid item md={3}>
-                  <Checkbox
-                    onChange={() => {
-                      isWorkingDay ? removeDay(day) : addDay(day);
-                    }}
-                    checked={isWorkingDay}
-                  />
-                  <Typography component="span">{day}</Typography>
-                </Grid>
-                <Grid item md={3}>
-                  <Controller
-                    control={control}
-                    name={`${day}StartTime`}
-                    render={({ field }) => (
-                      <TimePicker
-                        {...field}
-                        ampm={false}
-                        format={format}
-                        disabled={!isWorkingDay}
-                        label="Start time"
-                      />
-                    )}
-                  ></Controller>
-                </Grid>
-                <Grid item md={3}>
-                  <Controller
-                    control={control}
-                    name={`${day}EndTime`}
-                    render={({ field }) => (
-                      <TimePicker
-                        ampm={false}
-                        format={format}
-                        disabled={!isWorkingDay}
-                        label="End Time time"
-                      />
-                    )}
-                  ></Controller>
-                </Grid>
-                <Grid item md={3}>
-                  {index === 0 && (
-                    <FormControlLabel
-                      value="end"
-                      control={<Checkbox />}
-                      label="Copy to all days"
-                      labelPlacement="end"
-                    />
-                  )}
-                </Grid>
-              </>
-            );
-          })}
-        </Grid>
-      </DemoContainer>
-    </LocalizationProvider>
+    <LocalizationProvider
+      dateAdapter={AdapterDayjs}
+    ></LocalizationProvider>
   );
 }
